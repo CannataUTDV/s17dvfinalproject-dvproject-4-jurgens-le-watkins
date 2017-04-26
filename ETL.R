@@ -139,3 +139,25 @@ df2 <- cbind(df2, df1Second)
 
 # Do an inner join by State of df2 and InternetConnectivity
 df2 <- merge(df2,df_InternetConnectivity, by ="State")
+
+# Find high, medium, and low ranges of Internet Usage
+sorted_df2 <- df2[order(df2$InternetUsage),] # sort df2 from lowest to highest
+low_range <- c(sorted_df2$InternetUsage[c(0: (51/3))]) # subset states with low Internet Usage
+medium_range <- c(sorted_df2$InternetUsage[c((51/3): (2*51/3))]) # subset states with medium Internet Usage
+high_range <- c(sorted_df2$InternetUsage[c((2*51/3) : 51)]) # subset states with high Internet Usage
+
+# Create column for Internet Usage Levels
+df2$InternetUsageLevel <- df2$InternetUsage
+
+# Go through internet usage for each state and determine their usage level
+for (i in 1:nrow(df2)){
+  if (df2$InternetUsage[i] %in% low_range){
+    df2$InternetUsageLevel[i] = "Low"
+  }
+  else if (df2$InternetUsage[i] %in% medium_range){
+    df2$InternetUsageLevel[i] = "Medium"
+  }
+  else if (df2$InternetUsage[i] %in% high_range){
+    df2$InternetUsageLevel[i] = "High"
+  }
+}
