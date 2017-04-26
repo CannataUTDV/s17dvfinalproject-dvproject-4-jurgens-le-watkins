@@ -90,6 +90,16 @@ df1Second <- data.world::query(connection = conn,
                                C.`Facebook Penetration`
                                from Facebook as C")
 
+InternetConnectivity <- data.world::query(connection = conn, type = "sql",
+                                             dataset = "thule179/s-17-dv-final-project",
+                                             "SELECT c.State as State, `Internet Connectivity`.`No connection anywhere (%)` as NoConnectionAnywhere, `Internet Connectivity`.`No home connection, but connect elsewhere (%)`
+as NoHomeConnection_ConnectElseWhere, `Internet Connectivity`.`Connect at home only (%)` as ConnectAtHomeOnly, 
+                                          InternetUsageAtHome.`Internet Usage At Home` as InternetUsageAtHome, InternetUsageAtWork.`Internet Usage At Work` as InternetUsageAtWork,
+                                          InternetUsageAtCoffeeShops.InternetUsageAtCoffeeShops as InternetUsageAtCoffeeShops
+                                          FROM `Internet Connectivity.xlsx/Internet Connectivity`as c, `Internet Connectivity.xlsx/InternetUsageAtHome` as h,
+                                          InternetUsageAtCoffeeShops as s, InternetUsageAtWork as w
+                                          where c.State = h.State and s.State = h.State and h.State = w.State")
+df_InternetConnectivity <- data.frame(InternetConnectivity)
 # Put males into age categories
 male0to9 <- df1$B01001_003 + df1$B01001_004
 male10to19 <- df1$B01001_005 + df1$B01001_006 + df1$B01001_007
@@ -125,3 +135,4 @@ df2 <- as.data.frame(cbind(State = df1$AreaName, male0to9, male10to19, male20to2
 # Change the numeric columns to numeric.
 df2[-1] <- as.data.frame(apply(df2[-1], 2, as.numeric))
 df2 <- cbind(df2, df1Second)
+df2 <- merge(df2,df_InternetConnectivity, by ="State")
