@@ -56,8 +56,25 @@ df1 <- data.world::query(connection = conn,
                          A.`B01001_046`,
                          A.`B01001_047`,
                          A.`B01001_048`,
-                         A.`B01001_049`
-                         from `uscensusbureau`.`acs-2015-5-e-agesex`.`USA_All_States` as A")
+                         A.`B01001_049`,
+                         B.`B19001_002`, 
+                         B.`B19001_003`,
+                         B.`B19001_004`, 
+                         B.`B19001_005`, 
+                         B.`B19001_006`, 
+                         B.`B19001_007`, 
+                         B.`B19001_008`, 
+                         B.`B19001_009`, 
+                         B.`B19001_010`, 
+                         B.`B19001_011`, 
+                         B.`B19001_012`, 
+                         B.`B19001_013`, 
+                         B.`B19001_014`, 
+                         B.`B19001_015`, 
+                         B.`B19001_016`,
+                         B.`B19001_017`
+                         from `uscensusbureau`.`acs-2015-5-e-agesex`.`USA_All_States` as A,
+                         `uscensusbureau`.`acs-2015-5-e-income`.`USA_All_States` as B")
 
 # Put males into age categories
 male0to9 <- df1$B01001_003 + df1$B01001_004
