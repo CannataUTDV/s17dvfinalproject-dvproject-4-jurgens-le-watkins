@@ -5,7 +5,7 @@ conn <- data.world(token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwcm9kLXVzZXItY2xpZW5
 
 df1 <- data.world::query(connection = conn,
                          type = "sql",
-                         dataset = "lowatt/s-17-dv-project-6",
+                         dataset = "thule179/s-17-dv-final-project",
                          "select 
                          A.AreaName,
                          A.`B01001_001`, 
@@ -74,7 +74,21 @@ df1 <- data.world::query(connection = conn,
                          B.`B19001_016`,
                          B.`B19001_017`
                          from `uscensusbureau`.`acs-2015-5-e-agesex`.`USA_All_States` as A,
-                         `uscensusbureau`.`acs-2015-5-e-income`.`USA_All_States` as B")
+                         `uscensusbureau`.`acs-2015-5-e-income`.`USA_All_States` as B
+                         where A.AreaName = B.AreaName"
+                         )
+
+df1Second <- data.world::query(connection = conn,
+                               type = "sql",
+                               dataset = "thule179/s-17-dv-final-project",         
+                               "select
+                               C.`Population (2010 Est.)`,
+                               C.`Population % of USA`,
+                               C.`Internet users June, 2010`,
+                               C.`Internet Penetration`,
+                               C.`Facebook users August, 2010`,
+                               C.`Facebook Penetration`
+                               from Facebook as C")
 
 # Put males into age categories
 male0to9 <- df1$B01001_003 + df1$B01001_004
@@ -98,8 +112,16 @@ female60to69 <- df1$B01001_042 + df1$B01001_043 + df1$B01001_044 + df1$B01001_04
 female70to79 <- df1$B01001_046 + df1$B01001_047
 female80andUp <- df1$B01001_048 + df1$B01001_049
 
+# Group income into categories
+TenToThirtyK <- df1$B19001_002 + df1$B19001_003 + df1$B19001_004 + df1$B19001_005 + df1$B19001_006
+ThirtyToFiftyK <- df1$B19001_007 + df1$B19001_008 + df1$B19001_009 + df1$B19001_010
+FiftyToHundredK <- df1$B19001_011 + df1$B19001_012 + df1$B19001_013
+HundredToHundredFiftyK <- df1$B19001_014 + df1$B19001_015
+HundredFiftyPlus <- df1$B19001_016 + df1$B19001_017
+
 # Bind all the categories into a data frame
-df2 <- as.data.frame(cbind(State = df1$AreaName, male0to9, male10to19, male20to29, male30to39, male40to49, male50to59, male60to69, male70to79, male80andUp, female0to9, female10to19, female20to29, female30to39, female40to49, female50to59, female60to69, female70to79, female80andUp), stringsAsFactors = FALSE)
+df2 <- as.data.frame(cbind(State = df1$AreaName, male0to9, male10to19, male20to29, male30to39, male40to49, male50to59, male60to69, male70to79, male80andUp, female0to9, female10to19, female20to29, female30to39, female40to49, female50to59, female60to69, female70to79, female80andUp, TenToThirtyK, ThirtyToFiftyK, FiftyToHundredK, HundredToHundredFiftyK, HundredFiftyPlus), stringsAsFactors = FALSE)
 
 # Change the numeric columns to numeric.
 df2[-1] <- as.data.frame(apply(df2[-1], 2, as.numeric))
+df2 <- cbind(df2, df1Second)
