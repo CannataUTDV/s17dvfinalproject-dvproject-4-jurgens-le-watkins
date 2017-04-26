@@ -90,17 +90,17 @@ df1Second <- data.world::query(connection = conn,
                                C.`Facebook Penetration`
                                from Facebook as C")
 
-InternetConnectivity <- data.world::query(connection = conn, type = "sql",
+df_InternetConnectivity <- data.world::query(connection = conn, type = "sql",
                                              dataset = "thule179/s-17-dv-final-project",
                                              "SELECT c.State as State, `Internet Connectivity`.`No connection anywhere (%)` as NoConnectionAnywhere, `Internet Connectivity`.`No home connection, but connect elsewhere (%)`
 as NoHomeConnection_ConnectElseWhere, `Internet Connectivity`.`Connect at home only (%)` as ConnectAtHomeOnly, 
                                           InternetUsageAtHome.`Internet Usage At Home` as InternetUsageAtHome, InternetUsageAtWork.`Internet Usage At Work` as InternetUsageAtWork,
                                           InternetUsageAtCoffeeShops.InternetUsageAtCoffeeShops as InternetUsageAtCoffeeShops,
-                                          InternetUsage.InternetUsage
+                                          InternetUsage.InternetUsage as InternetUsage
                                           FROM `Internet Connectivity.xlsx/Internet Connectivity`as c, `Internet Connectivity.xlsx/InternetUsageAtHome` as h,
                                           InternetUsageAtCoffeeShops as s, InternetUsageAtWork as w, InternetUsage as i
                                           where c.State = h.State and s.State = h.State and h.State = w.State and w.State = i.State")
-df_InternetConnectivity <- data.frame(InternetConnectivity)
+
 # Put males into age categories
 male0to9 <- df1$B01001_003 + df1$B01001_004
 male10to19 <- df1$B01001_005 + df1$B01001_006 + df1$B01001_007
@@ -131,7 +131,7 @@ HundredToHundredFiftyK <- df1$B19001_014 + df1$B19001_015
 HundredFiftyPlus <- df1$B19001_016 + df1$B19001_017
 
 # Bind all the categories into a data frame
-df2 <- as.data.frame(cbind(State = df1$AreaName, male0to9, male10to19, male20to29, male30to39, male40to49, male50to59, male60to69, male70to79, male80andUp, female0to9, female10to19, female20to29, female30to39, female40to49, female50to59, female60to69, female70to79, female80andUp, TenToThirtyK, ThirtyToFiftyK, FiftyToHundredK, HundredToHundredFiftyK, HundredFiftyPlus), stringsAsFactors = FALSE)
+df2 <- as.data.frame(cbind(State = df1$AreaName, TotalPopulation = df1$B01001_001, male0to9, male10to19, male20to29, male30to39, male40to49, male50to59, male60to69, male70to79, male80andUp, female0to9, female10to19, female20to29, female30to39, female40to49, female50to59, female60to69, female70to79, female80andUp, TenToThirtyK, ThirtyToFiftyK, FiftyToHundredK, HundredToHundredFiftyK, HundredFiftyPlus), stringsAsFactors = FALSE)
 
 # Change the numeric columns to numeric.
 df2[-1] <- as.data.frame(apply(df2[-1], 2, as.numeric))
@@ -140,24 +140,33 @@ df2 <- cbind(df2, df1Second)
 # Do an inner join by State of df2 and InternetConnectivity
 df2 <- merge(df2,df_InternetConnectivity, by ="State")
 
+# remove \n line breaks and commas in rows to convert InternetUsage into numbers
+df2[,'InternetUsage'] <- gsub(",","",df2[,'InternetUsage'])
+df2[,'InternetUsage'] <- gsub("\n","",df2[,'InternetUsage'])
+df2$InternetUsage <- as.numeric(df2$InternetUsage)
+
+# get average internet usage per person for each State
+df2$Avg_InternetUsage <- df2$InternetUsage
+df2$Avg_InternetUsage <- df2$InternetUsage / df2$TotalPopulation
+
 # Find high, medium, and low ranges of Internet Usage
-sorted_df2 <- df2[order(df2$InternetUsage),] # sort df2 from lowest to highest
-low_range <- c(sorted_df2$InternetUsage[c(0: (51/3))]) # subset states with low Internet Usage
-medium_range <- c(sorted_df2$InternetUsage[c((51/3): (2*51/3))]) # subset states with medium Internet Usage
-high_range <- c(sorted_df2$InternetUsage[c((2*51/3) : 51)]) # subset states with high Internet Usage
+sorted_df2 <- df2[order(df2$Avg_InternetUsage),] # sort df2 from lowest to highest
+low_range <- c(sorted_df2$Avg_InternetUsage[c(0: (51/3))]) # subset states with low Internet Usage
+medium_range <- c(sorted_df2$Avg_InternetUsage[c((51/3): (2*51/3))]) # subset states with medium Internet Usage
+high_range <- c(sorted_df2$Avg_InternetUsage[c((2*51/3) : 51)]) # subset states with high Internet Usage
 
 # Create column for Internet Usage Levels
 df2$InternetUsageLevel <- df2$InternetUsage
 
 # Go through internet usage for each state and determine their usage level
 for (i in 1:nrow(df2)){
-  if (df2$InternetUsage[i] %in% low_range){
+  if (df2$Avg_InternetUsage[i] %in% low_range){
     df2$InternetUsageLevel[i] = "Low"
   }
-  else if (df2$InternetUsage[i] %in% medium_range){
+  else if (df2$Avg_InternetUsage[i] %in% medium_range){
     df2$InternetUsageLevel[i] = "Medium"
   }
-  else if (df2$InternetUsage[i] %in% high_range){
+  else if (df2$Avg_InternetUsage[i] %in% high_range){
     df2$InternetUsageLevel[i] = "High"
   }
 }
