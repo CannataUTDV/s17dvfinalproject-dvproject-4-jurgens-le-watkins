@@ -82,7 +82,7 @@ df1Second <- data.world::query(connection = conn,
                                type = "sql",
                                dataset = "thule179/s-17-dv-final-project",         
                                "select
-                               C.`Population (2010 Est.)` as 2010_population,
+                               C.`Population (2010 Est.)`,
                                C.`Population % of USA`,
                                C.`Internet users June, 2010`,
                                C.`Internet Penetration`,
@@ -91,7 +91,6 @@ df1Second <- data.world::query(connection = conn,
                                from Facebook as C")
 
 # Put males into age categories
-
 male0to9 <- df1$B01001_003 + df1$B01001_004
 male10to19 <- df1$B01001_005 + df1$B01001_006 + df1$B01001_007
 male20to29 <- df1$B01001_008 + df1$B01001_009 + df1$B01001_010 + df1$B01001_011
@@ -101,10 +100,8 @@ male50to59 <- df1$B01001_016 + df1$B01001_017
 male60to69 <- df1$B01001_018 + df1$B01001_019 + df1$B01001_020 + df1$B01001_021
 male70to79 <- df1$B01001_022 + df1$B01001_023
 male80andUp <- df1$B01001_024 + df1$B01001_025
-allMaleAdults <- df1$B01001_007 + male20to29 + male30to39 + male40to49 + male50to59 +male60to69 +male70to79 + male80andUp 
 
 # Put females into age categories
-
 female0to9 <- df1$B01001_027 + df1$B01001_028
 female10to19 <- df1$B01001_029 + df1$B01001_030 + df1$B01001_031
 female20to29 <- df1$B01001_032 + df1$B01001_033 + df1$B01001_034 + df1$B01001_035
@@ -114,7 +111,6 @@ female50to59 <- df1$B01001_040 + df1$B01001_041
 female60to69 <- df1$B01001_042 + df1$B01001_043 + df1$B01001_044 + df1$B01001_045
 female70to79 <- df1$B01001_046 + df1$B01001_047
 female80andUp <- df1$B01001_048 + df1$B01001_049
-allFemaleAdults <- + df1$B01001_031 + female20to29 +female30to39 +female40to49+female50to59 +female60to69+female70to79+female80andUp 
 
 # Group income into categories
 TenToThirtyK <- df1$B19001_002 + df1$B19001_003 + df1$B19001_004 + df1$B19001_005 + df1$B19001_006
@@ -122,30 +118,6 @@ ThirtyToFiftyK <- df1$B19001_007 + df1$B19001_008 + df1$B19001_009 + df1$B19001_
 FiftyToHundredK <- df1$B19001_011 + df1$B19001_012 + df1$B19001_013
 HundredToHundredFiftyK <- df1$B19001_014 + df1$B19001_015
 HundredFiftyPlus <- df1$B19001_016 + df1$B19001_017
-
-# Get internet users by gender
-df1Second$MaleAdult_InternetUsers <- 0.77 * allMaleAdults
-df1Second$FemaleAdult_InternetUsers <- 0.76 * allFemaleAdults
-
-# Get social media usage by population
-df1Second$TotalFBUsers <- 0.68 * (allMaleAdults + allFemaleAdults)
-df1Second$TotalInstagramUsers <- 0.28 * (allMaleAdults + allFemaleAdults)
-df1Second$TotalPinterestUsers <- 0.26 * (allMaleAdults + allFemaleAdults)
-df1Second$TotalLinkedinUsers <- 0.25 * (allMaleAdults + allFemaleAdults)
-df1Second$TotalTwitterUsers <- 0.21 * (allMaleAdults + allFemaleAdults)
-
-# Get social media users by gender
-df1Second$Male_FBUsers <- 0.67 * allMaleAdults
-df1Second$Female_FBUsers <- 0.69 * allFemaleAdults
-df1Second$Male_InstagramUsers <- 0.23 * allMaleAdults
-df1Second$Female_InstagramUsers <- 0.32 * allFemaleAdults
-df1Second$Male_PinterestUsers <- 0.15 * allMaleAdults
-df1Second$Female_PinterestUsers <- 0.38 * allFemaleAdults
-df1Second$Male_LinkedinUsers <- 0.28 * allMaleAdults
-df1Second$Female_LinkedinUsers <- 0.23 * allFemaleAdults
-df1Second$Male_TwitterUsers <- 0.21 * allMaleAdults
-df1Second$Female_TwitterUsers <- 0.21 * allFemaleAdults
-
 
 # Bind all the categories into a data frame
 df2 <- as.data.frame(cbind(State = df1$AreaName, male0to9, male10to19, male20to29, male30to39, male40to49, male50to59, male60to69, male70to79, male80andUp, female0to9, female10to19, female20to29, female30to39, female40to49, female50to59, female60to69, female70to79, female80andUp, TenToThirtyK, ThirtyToFiftyK, FiftyToHundredK, HundredToHundredFiftyK, HundredFiftyPlus), stringsAsFactors = FALSE)
