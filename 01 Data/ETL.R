@@ -170,3 +170,5 @@ for (i in 1:nrow(df2)){
     df2$InternetUsageLevel[i] = "High"
   }
 }
+
+
