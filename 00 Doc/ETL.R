@@ -227,3 +227,6 @@ df2$InternetUsageAtCoffeeShopsLevel <- UsageLevel(df2$Avg_InternetUsageAtCoffeeS
 
 # export to csv
 write.csv(df2,file="./CleanedInternetUsageByState.csv")
+table(df2$InternetUsageAtWorkLevel)
+
+interaction(df2$InternetUsageAtHomeLevel, df2$InternetUsageAtWorkLevel)
