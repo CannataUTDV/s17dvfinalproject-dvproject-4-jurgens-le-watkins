@@ -171,4 +171,10 @@ for (i in 1:nrow(df2)){
   }
 }
 
+# Change character list as numeric
 
+df2$InternetUsageAtWork <- gsub(",", "", df2$InternetUsageAtWork)
+df2$InternetUsageAtWork <- gsub("\n", "", df2$InternetUsageAtWork)
+df2$InternetUsageAtWork <- as.numeric(df2$InternetUsageAtWork)
+
+homeOverWorkUsage <- df2$InternetUsageAtHome/df2$InternetUsageAtWork
