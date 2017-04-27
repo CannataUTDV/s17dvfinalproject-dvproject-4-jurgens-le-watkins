@@ -215,6 +215,7 @@ UsageLevel <- function(col, low_range, medium_range, high_range ){
       col[i] = "High"
     }
   }
+
   result <- col
   return(result)
 }
@@ -226,3 +227,5 @@ df2$InternetUsageAtWorkLevel <- UsageLevel(df2$Avg_InternetUsageAtWork, low_rang
 df2$InternetUsageAtCoffeeShopsLevel <- UsageLevel(df2$Avg_InternetUsageAtCoffeeShops, low_range_coffee, medium_range_coffee, high_range_coffee)
 
 # export to csv
+write.csv(df2,file="./CleanedInternetUsageByState.csv")
+
