@@ -220,7 +220,6 @@ UsageLevel <- function(col, low_range, medium_range, high_range ){
   return(result)
 }
 
-<<<<<<< HEAD
 # Get internet usage level by category
 df2$InternetUsageLevel <- UsageLevel(df2$Avg_InternetUsage,low_range,medium_range,high_range)
 df2$InternetUsageAtHomeLevel <- UsageLevel(df2$Avg_InternetUsageAtHome, low_range_home, medium_range_home, high_range_home)
@@ -229,12 +228,4 @@ df2$InternetUsageAtCoffeeShopsLevel <- UsageLevel(df2$Avg_InternetUsageAtCoffeeS
 
 # export to csv
 write.csv(df2,file="./CleanedInternetUsageByState.csv")
-=======
-# Change character list as numeric
->>>>>>> origin/master
 
-df2$InternetUsageAtWork <- gsub(",", "", df2$InternetUsageAtWork)
-df2$InternetUsageAtWork <- gsub("\n", "", df2$InternetUsageAtWork)
-df2$InternetUsageAtWork <- as.numeric(df2$InternetUsageAtWork)
-
-homeOverWorkUsage <- df2$InternetUsageAtHome/df2$InternetUsageAtWork
