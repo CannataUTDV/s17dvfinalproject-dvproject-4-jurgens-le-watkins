@@ -1,6 +1,5 @@
 require(data.world)
 require(dplyr)
-require(csv)
 require
 
 conn <- data.world(token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwcm9kLXVzZXItY2xpZW50OnNpbmlzdGVycm9iZXJ0IiwiaXNzIjoiYWdlbnQ6c2luaXN0ZXJyb2JlcnQ6OjdhZDI2MzMxLWQxOWItNGE3YS1iYTJkLTUzM2EzMzRjY2MzMCIsImlhdCI6MTQ4NDY5NzI2Miwicm9sZSI6WyJ1c2VyX2FwaV93cml0ZSIsInVzZXJfYXBpX3JlYWQiXSwiZ2VuZXJhbC1wdXJwb3NlIjp0cnVlfQ.Lj0KjHrPb7-eIXIP_SWcKPoT5dv1aNotZqn4x54JbvqoBJgyLlvVq5-4Fgc-af0tItOIQUffLbK_jvDF0sMLYw")
