@@ -1,0 +1,14 @@
+require(plotly)
+install.packages("scatterplot3d")
+require(scatterplot3d)
+require(ggplot2)
+require(dplyr)
+require(RColorBrewer)
+# Set working directory to 00 Doc.
+source("../01 Data/ETL.R")
+young <- df2 %>% select(State,male10to19,male20to29,female10to19,female20to29, TotalPopulation) %>% mutate(youngPerPop = (male10to19+male20to29+female10to19+female20to29)/TotalPopulation) %>% group_by(State)
+plotThing <- ggplot(df2, aes(x = df2$TotalPopulation, y = df2$Avg_InternetUsage )) + geom_point(aes(color = log(df2$TotalPopulation), size = log(TotalPopulation)),position = "jitter")+geom_text(aes(label=df2$State),hjust=2, vjust=-2) +scale_y_log10()+scale_x_log10()
+ggplotly(plotThing)
+
+
+
