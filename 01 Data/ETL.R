@@ -243,5 +243,5 @@ df2$YoungCategories <- if_else(df2$YoungProportion < third, "Low", if_else(df2$Y
 
 
 # export to csv
-# write.csv(df2,file="./CleanedInternetUsageByState.csv")
+#write.csv(df2,file="./CleanedInternetUsageByState.csv")
 
