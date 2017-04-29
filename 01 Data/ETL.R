@@ -57,6 +57,7 @@ df1 <- data.world::query(connection = conn,
                          A.`B01001_047`,
                          A.`B01001_048`,
                          A.`B01001_049`,
+                         B.`B19062_001`,
                          B.`B19001_002`, 
                          B.`B19001_003`,
                          B.`B19001_004`, 
@@ -124,6 +125,7 @@ female70to79 <- df1$B01001_046 + df1$B01001_047
 female80andUp <- df1$B01001_048 + df1$B01001_049
 
 # Group income into categories
+Agg_Income <- df1$B19062_001
 TenToThirtyK <- df1$B19001_002 + df1$B19001_003 + df1$B19001_004 + df1$B19001_005 + df1$B19001_006
 ThirtyToFiftyK <- df1$B19001_007 + df1$B19001_008 + df1$B19001_009 + df1$B19001_010
 FiftyToHundredK <- df1$B19001_011 + df1$B19001_012 + df1$B19001_013
@@ -131,7 +133,7 @@ HundredToHundredFiftyK <- df1$B19001_014 + df1$B19001_015
 HundredFiftyPlus <- df1$B19001_016 + df1$B19001_017
 
 # Bind all the categories into a data frame
-df2 <- as.data.frame(cbind(State = df1$AreaName, TotalPopulation = df1$B01001_001, male0to9, male10to19, male20to29, male30to39, male40to49, male50to59, male60to69, male70to79, male80andUp, female0to9, female10to19, female20to29, female30to39, female40to49, female50to59, female60to69, female70to79, female80andUp, TenToThirtyK, ThirtyToFiftyK, FiftyToHundredK, HundredToHundredFiftyK, HundredFiftyPlus), stringsAsFactors = FALSE)
+df2 <- as.data.frame(cbind(State = df1$AreaName, TotalPopulation = df1$B01001_001, male0to9, male10to19, male20to29, male30to39, male40to49, male50to59, male60to69, male70to79, male80andUp, female0to9, female10to19, female20to29, female30to39, female40to49, female50to59, female60to69, female70to79, female80andUp, Agg_Income,TenToThirtyK, ThirtyToFiftyK, FiftyToHundredK, HundredToHundredFiftyK, HundredFiftyPlus), stringsAsFactors = FALSE)
 
 # Change the numeric columns to numeric.
 df2[-1] <- as.data.frame(apply(df2[-1], 2, as.numeric))
@@ -139,6 +141,9 @@ df2 <- cbind(df2, df1Second)
 
 # Do an inner join by State of df2 and InternetConnectivity
 df2 <- merge(df2,df_InternetConnectivity, by ="State")
+
+# get average income for each state
+df2$PerCapitaIncome <-  df2$Agg_Income / df2$TotalPopulation
 
 # remove \n line breaks and commas in rows to convert InternetUsage into numbers
 df2[,'InternetUsage'] <- gsub(",","",df2[,'InternetUsage'])
