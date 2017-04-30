@@ -175,9 +175,9 @@ $(document).ready(function () {
 <div id="ii.-data-sources" class="section level1">
 <h1>II. Data Sources</h1>
 <p>Note : set the working directory to the 00 Doc Folder.</p>
-<p><b>Original data sources:</b> <a href="http://www.governing.com/gov-data/internet-usage-by-state.html" class="uri">http://www.governing.com/gov-data/internet-usage-by-state.html</a> <a href="https://www.ntia.doc.gov/data/digital-nation-data-explorer#sel=tvBoxUser&amp;disp=map" class="uri">https://www.ntia.doc.gov/data/digital-nation-data-explorer#sel=tvBoxUser&amp;disp=map</a></p>
+<p><b>Original data sources:</b></br> <a href="http://www.governing.com/gov-data/internet-usage-by-state.html" class="uri">http://www.governing.com/gov-data/internet-usage-by-state.html</a></br> <a href="https://www.ntia.doc.gov/data/digital-nation-data-explorer#sel=tvBoxUser&amp;disp=map" class="uri">https://www.ntia.doc.gov/data/digital-nation-data-explorer#sel=tvBoxUser&amp;disp=map</a></p>
 <p>To download the clean data (what was used in Tableau) download CleanedInternetUsageBySatet.csv from the <b>data.world</b> link. <a href="https://data.world/lowatt/s-17-dv-project-6" class="uri">https://data.world/lowatt/s-17-dv-project-6</a> and download ASM_2015_31AS101_with_ann.csv.</p>
-<p>This data describes Internet Usage and Connectivity across the United States from July 2015 to October 2016. The columns that we used were a combinations of the census population data,income data, internet usage and connectivity data.</p>
+<p>This data describes Internet Usage and Connectivity across the United States from July 2015 to October 2016. The columns that we used were a combination of the census population data,income data, internet usage and connectivity data.</p>
 </div>
 <div id="iii.-etl-process" class="section level1">
 <h1>III. ETL Process</h1>
@@ -259,7 +259,7 @@ $(document).ready(function () {
                          `uscensusbureau`.`acs-2015-5-e-income`.`USA_All_States` as B
                          where A.AreaName = B.AreaName&quot;
                          )</code></pre>
-<p>We then took the data related to Facebook traffic penetration.</p>
+<p>We then took the data table related to Facebook traffic penetration.</p>
 <pre class="r"><code>df1Second &lt;- data.world::query(connection = conn,
                                type = &quot;sql&quot;,
                                dataset = &quot;thule179/s-17-dv-final-project&quot;,         
@@ -271,7 +271,7 @@ $(document).ready(function () {
                                C.`Facebook users August, 2010`,
                                C.`Facebook Penetration`
                                from Facebook as C&quot;)</code></pre>
-<p>And lastly, we brought in data points for internet usage and connectivity.</p>
+<p>Lastly, we brought in data points for internet usage and connectivity.</p>
 <pre class="r"><code>df_InternetConnectivity &lt;- data.world::query(connection = conn, type = &quot;sql&quot;,
                                              dataset = &quot;thule179/s-17-dv-final-project&quot;,
                                              &quot;SELECT c.State as State, `Internet Connectivity`.`No connection anywhere (%)` as NoConnectionAnywhere, `Internet Connectivity`.`No home connection, but connect elsewhere (%)`
@@ -298,7 +298,7 @@ male50to59 &lt;- df1$B01001_016 + df1$B01001_017
 male60to69 &lt;- df1$B01001_018 + df1$B01001_019 + df1$B01001_020 + df1$B01001_021
 male70to79 &lt;- df1$B01001_022 + df1$B01001_023
 male80andUp &lt;- df1$B01001_024 + df1$B01001_025</code></pre>
-<p>Put females into age categories</p>
+<p>Put females into age categories.</p>
 <pre class="r"><code>female0to9 &lt;- df1$B01001_027 + df1$B01001_028
 female10to19 &lt;- df1$B01001_029 + df1$B01001_030 + df1$B01001_031
 female20to29 &lt;- df1$B01001_032 + df1$B01001_033 + df1$B01001_034 + df1$B01001_035
@@ -311,7 +311,7 @@ female80andUp &lt;- df1$B01001_048 + df1$B01001_049</code></pre>
 </div>
 <div id="b.-grouping-by-income" class="section level3">
 <h3>b. Grouping By Income</h3>
-<p>Group income into categories</p>
+<p>Group income into categories.</p>
 <pre class="r"><code>Agg_Income &lt;- df1$B19062_001
 TenToThirtyK &lt;- df1$B19001_002 + df1$B19001_003 + df1$B19001_004 + df1$B19001_005 + df1$B19001_006
 ThirtyToFiftyK &lt;- df1$B19001_007 + df1$B19001_008 + df1$B19001_009 + df1$B19001_010
@@ -321,21 +321,21 @@ HundredFiftyPlus &lt;- df1$B19001_016 + df1$B19001_017</code></pre>
 </div>
 <div id="c.-binding-the-data" class="section level3">
 <h3>c. Binding the data</h3>
-<p>Bind all the categories into a data frame</p>
+<p>Bind all the categories into a data frame.</p>
 <pre class="r"><code>df2 &lt;- as.data.frame(cbind(State = df1$AreaName, TotalPopulation = df1$B01001_001, male0to9, male10to19, male20to29, male30to39, male40to49, male50to59, male60to69, male70to79, male80andUp, female0to9, female10to19, female20to29, female30to39, female40to49, female50to59, female60to69, female70to79, female80andUp, Agg_Income,TenToThirtyK, ThirtyToFiftyK, FiftyToHundredK, HundredToHundredFiftyK, HundredFiftyPlus), stringsAsFactors = FALSE)</code></pre>
 <p>Change the numeric columns to numeric.</p>
 <pre class="r"><code>df2[-1] &lt;- as.data.frame(apply(df2[-1], 2, as.numeric))
 df2 &lt;- cbind(df2, df1Second)</code></pre>
-<p>Do an inner join by State of df2 and InternetConnectivity</p>
+<p>Do an inner join by State of df2 and InternetConnectivity.</p>
 <pre class="r"><code>df2 &lt;- merge(df2,df_InternetConnectivity, by =&quot;State&quot;)</code></pre>
 </div>
 </div>
 <div id="cleaning-the-data" class="section level2">
 <h2>3. Cleaning the Data</h2>
 <p>Now we have our main data table, we’d need to clean up our data to prepare for analysis.</p>
-<p>Get average income for each state</p>
+<p>Get average income for each state.</p>
 <pre class="r"><code>df2$PerCapitaIncome &lt;-  df2$Agg_Income / df2$TotalPopulation</code></pre>
-<p>Remove line breaks and commas in rows to convert InternetUsage into numbers</p>
+<p>Remove ‘’ line breaks and commas in rows to convert InternetUsage into numbers.</p>
 <pre class="r"><code>df2[,'InternetUsage'] &lt;- gsub(&quot;,&quot;,&quot;&quot;,df2[,'InternetUsage'])
 df2[,'InternetUsage'] &lt;- gsub(&quot;\n&quot;,&quot;&quot;,df2[,'InternetUsage'])
 df2[,'InternetUsageAtCoffeeShops'] &lt;- gsub(&quot;,&quot;,&quot;&quot;,df2[,'InternetUsageAtCoffeeShops'])
@@ -351,16 +351,16 @@ df2$InternetUsageAtHome &lt;-  as.numeric(df2$InternetUsageAtHome)</code></pre>
 <p>Get average internet usage per person for each State.</p>
 <pre class="r"><code>df2$Avg_InternetUsage &lt;- df2$InternetUsage
 df2$Avg_InternetUsage &lt;- df2$InternetUsage / df2$TotalPopulation</code></pre>
-<p>Get average internet usage at work</p>
+<p>Get average internet usage at work.</p>
 <pre class="r"><code>df2$Avg_InternetUsageAtWork &lt;- df2$InternetUsageAtWork
 df2$Avg_InternetUsageAtWork &lt;- df2$InternetUsageAtWork / df2$TotalPopulation</code></pre>
-<p>Get average internet usage at home</p>
+<p>Get average internet usage at home.</p>
 <pre class="r"><code>df2$Avg_InternetUsageAtHome &lt;- df2$InternetUsageAtHome
 df2$Avg_InternetUsageAtHome &lt;- df2$InternetUsageAtHome / df2$TotalPopulation</code></pre>
-<p>Get average internet usage at coffee shops</p>
+<p>Get average internet usage at coffee shops.</p>
 <pre class="r"><code>df2$Avg_InternetUsageAtCoffeeShops &lt;- df2$InternetUsageAtCoffeeShops
 df2$Avg_InternetUsageAtCoffeeShops &lt;- df2$InternetUsageAtCoffeeShops / df2$TotalPopulation</code></pre>
-<p>Find high, medium, and low ranges of Internet Usage</p>
+<p>Find high, medium, and low ranges of Internet Usage.</p>
 <pre class="r"><code>sorted_df2 &lt;- df2[order(df2$Avg_InternetUsage),] # sort df2 from lowest to highest based on avg_internet usage
 low_range &lt;- c(sorted_df2$Avg_InternetUsage[c(0: (51/3))]) # subset states with low Internet Usage
 medium_range &lt;- c(sorted_df2$Avg_InternetUsage[c((51/3): (2*51/3))]) # subset states with medium Internet Usage
@@ -389,7 +389,7 @@ df2$InternetUsageLevel &lt;- df2$InternetUsage
 df2$InternetUsageAtHomeLevel &lt;- df2$InternetUsageAtHome
 df2$InternetUsageAtWorkLevel &lt;- df2$InternetUsageAtWork
 df2$InternetUsageAtCoffeeShopsLevel&lt;- df2$InternetUsageAtCoffeeShops</code></pre>
-<p>Create a function to categorize internet usage level</p>
+<p>Create a function to categorize internet usage level.</p>
 <pre class="r"><code>UsageLevel &lt;- function(col, low_range, medium_range, high_range ){
   for (i in 1:nrow(df2)){
     if(col[i] %in% low_range){
@@ -406,20 +406,20 @@ df2$InternetUsageAtCoffeeShopsLevel&lt;- df2$InternetUsageAtCoffeeShops</code></
   result &lt;- col
   return(result)
 }</code></pre>
-<p>Get internet usage level by category</p>
+<p>Get internet usage level by category.</p>
 <pre class="r"><code>df2$InternetUsageLevel &lt;- UsageLevel(df2$Avg_InternetUsage,low_range,medium_range,high_range)
 df2$InternetUsageAtHomeLevel &lt;- UsageLevel(df2$Avg_InternetUsageAtHome, low_range_home, medium_range_home, high_range_home)
 df2$InternetUsageAtWorkLevel &lt;- UsageLevel(df2$Avg_InternetUsageAtWork, low_range_work, medium_range_work, high_range_work)
 df2$InternetUsageAtCoffeeShopsLevel &lt;- UsageLevel(df2$Avg_InternetUsageAtCoffeeShops, low_range_coffee, medium_range_coffee, high_range_coffee)</code></pre>
-<p>Add percent of total population for each age range</p>
+<p>Add percent of total population for each age range.</p>
 <pre class="r"><code>df2$YoungProportion &lt;- (df2$male0to9 + df2$male10to19 + df2$male20to29 + df2$female0to9 + df2$female10to19 + df2$female20to29) / df2$TotalPopulation
 df2$MiddleProportion &lt;- (df2$male30to39 + df2$male40to49 + df2$male50to59 + df2$female30to39 + df2$female40to49 + df2$female50to59) / df2$TotalPopulation
 df2$OldProportion &lt;- 1 - df2$YoungProportion - df2$MiddleProportion</code></pre>
-<p>Create discrete categories for Young Proportion</p>
+<p>Create discrete categories for Young Proportion.</p>
 <pre class="r"><code>third = quantile(df2$YoungProportion, 1/3)
 two_third = quantile(df2$YoungProportion, 2/3)
 df2$YoungCategories &lt;- if_else(df2$YoungProportion &lt; third, &quot;Low&quot;, if_else(df2$YoungProportion &lt; two_third, &quot;Medium&quot;, &quot;High&quot;))</code></pre>
-<p>Export to csv</p>
+<p>Export to csv.</p>
 <pre class="r"><code>write.csv(df2,file=&quot;./CleanedInternetUsageByState.csv&quot;)</code></pre>
 <p>Now we have a nicely formatted csv file ready for analysis!</p>
 </div>
