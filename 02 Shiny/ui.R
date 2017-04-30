@@ -36,9 +36,8 @@ dashboardPage(
              DT::dataTableOutput("barchartData1"),
              hr()
           ),
-          tabPanel("Barchart with Table Calculation", "Black = Sum of Sales per Region, Red = Average Sum of Sales per Category, and  Blue = (Sum of Sales per Region - Average Sum of Sales per Category)", plotOutput("barchartPlot1", height=1500)),
-          tabPanel("High Discount Orders", leafletOutput("barchartMap1"), height=900 ),
-          tabPanel("High Sales Customers", plotlyOutput("barchartPlot2", height=700) )
+          tabPanel("Internet Usage", plotOutput("barchartPlot1", height=700)),
+          tabPanel("Internet Connectivity", plotlyOutput("barchartPlot2", height=1000, width=1000))
         )
       )
       # End Barchart tab content.

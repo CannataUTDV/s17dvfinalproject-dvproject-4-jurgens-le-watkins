@@ -13,9 +13,7 @@ df <- df%>%select(State,TotalPopulation,NoConnectionAnywhere,NoHomeConnection_Co
 df_top <- df[1:6,]
 df_top <- df_top%>%gather("Connection",Connection_Percentage,3:5,-TotalPopulation)
 
-x <- c("NoConnectionAnywhere","NoHomeConnection_ConnectElseWhere","ConnectAtHomeOnly")
-
-plot1 <- plot_ly(x = df_top$Connection, y = df_top$Connection_Percentage, color = ~df$State)%>%layout( title = "Top 6 States Average Connectivity")
+plot1 <- plot_ly(x = df_top$Connection, y = df_top$Connection_Percentage, color = ~df_top$State)%>%layout( title = "Top 6 States Average Connectivity")
 plot1
 
 # plot #2 - shows internet connectivity for every state - facet_wrap
