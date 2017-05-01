@@ -332,8 +332,23 @@ Now we have a nicely formatted csv file ready for analysis!
 
 # IV. Data Analysis
 ## Key Findings:
-+ 
-+
+
++ The first interesting analysis we discovered was a trend of **low internet usage at both home and work** in the southern and southwestern regions of the United States. Similarly, there is **high internet usage levels at home and work** in the northeastern area of the United States as well as the area from Minnesota to Illinois. In general, it seems like the **further north you are in the United States, the higher internet usage levels there are.** This may be due to the fact that people in the South are more likely to live and work in rural lifestyles than the northern states. Note that darker colors represent higher internet usage rates.
+```{r, message=FALSE, echo = FALSE, fig.width=12, fig.height = 12, fig.align='center'}
+df3 <- data.frame(state = df2$State, interaction(df2$InternetUsageAtHomeLevel, df2$InternetUsageAtWorkLevel))
+names(df3) <- c("region", "value")
+df3$value <- factor(df3$value, levels = c("Low.Low", "Low.Medium", "Low.High", "Medium.Low", "Medium.Medium", "Medium.High", "High.Low", "High.Medium", "High.High"))
+df3$region <- tolower(df3$region)
+levels(df3$value) <- c("Low Home Usage/Low Work Usage", "Low Home Usage/Medium Work Usage", "Low Home Usage/High Work Usage", "Medium Home Usage/Low Work Usage", "Medium Home Usage/Medium Work Usage", "Medium Home Usage/High Work Usage", "High Home Usage/Low Work Usage", "High Home Usage/Medium Work Usage", "High Home Usage/High Work Usage")
+data("continental_us_states")
+c1 <- state_choropleth(df3,
+                      zoom = continental_us_states)
+c1 + scale_fill_brewer(type = "seq", palette = 12) + labs(fill = "Internet Usage (Home/Work)")
+
+```
+
 +
 
++
 
+### Other Observations
