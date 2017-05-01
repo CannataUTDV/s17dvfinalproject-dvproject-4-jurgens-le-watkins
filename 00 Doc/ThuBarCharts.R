@@ -22,8 +22,8 @@ plot2 <- ggplot(df_all,aes(x = Connection, y = Connection_Percentage, fill = Con
 plot2
 
 # plot #3 - Diverging bar chart - Internet Usage
-df3 <- df2%>%select(State,InternetUsage)
-df3$InternetUsage_z <-  round((df3$InternetUsage - mean(df3$InternetUsage))/sd(df3$InternetUsage), 2)  # compute normalized Internet Usage
+df3 <- df2%>%select(State,Avg_InternetUsage)
+df3$InternetUsage_z <-  round((df3$Avg_InternetUsage - mean(df3$Avg_InternetUsage))/sd(df3$Avg_InternetUsage), 2)  # compute normalized Internet Usage
 df3$InternetUsage_type <- ifelse(df3$InternetUsage_z < 0, "below", "above")  # above / below avg flag
 df3 <- df3[order(df3$InternetUsage_z), ]  # sort
 df3$State <- factor(df3$State, levels = df3$State) 

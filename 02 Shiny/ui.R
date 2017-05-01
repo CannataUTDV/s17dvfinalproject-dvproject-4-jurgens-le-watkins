@@ -13,7 +13,7 @@ dashboardPage(
       menuItem("Box Plots", tabName = "boxplot", icon = icon("dashboard")),
       menuItem("Choropleths", tabName = "choropleth", icon = icon("dashboard")),
       menuItem("Scatter Plots", tabName = "scatter", icon = icon("dashboard")),
-      menuItem("Barcharts, Table Calculations", tabName = "barchart", icon = icon("dashboard"))
+      menuItem("Barcharts", tabName = "barchart", icon = icon("dashboard"))
     )
   ),
   dashboardBody(
@@ -23,6 +23,24 @@ dashboardPage(
     ),    
     tabItems(
       # Begin tab content.
+      ## -- Choropleth --##
+      tabItem(tabName = "choropleth",
+              tabsetPanel(
+                tabPanel("Data",  
+                         radioButtons("rb1", "Get data from:",
+                                      c("SQL" = "SQL",
+                                        "CSV" = "CSV"), inline=T),
+                         uiOutput("states1"), # See http://shiny.rstudio.com/gallery/dynamic-ui.html
+                         actionButton(inputId = "click1",  label = "To get data, click here"),
+                         hr(), # Add space after button.
+                         'Here is data for the choropleths',
+                         hr(),
+                         DT::dataTableOutput("choroplethData1"),
+                         hr()
+                ),
+                tabPanel("Internet Usage", plotOutput("choroplethPlot1", height=700),plotOutput("choroplethPlot2", height=700))
+              )
+      ),
       ## -- Scatterplot --##
       tabItem(tabName = "scatter",
               tabsetPanel(
@@ -39,7 +57,8 @@ dashboardPage(
                          hr()
                 ),
                 tabPanel("Per Capita Income and Average Internet Usage", plotlyOutput("scatterPlot1", height=700)),
-                tabPanel("Young Adult and Internet Usage at CoffeeShops", plotlyOutput("scatterPlot2", height=1000, width=1000))
+                tabPanel("Young Adult and Internet Usage at CoffeeShops", plotlyOutput("scatterPlot2", height=1000, width=1000)),
+                tabPanel("Young Population and Internet Usage", plotlyOutput("scatterPlot3", height=1000, width=1000))
               )
       ),
       
