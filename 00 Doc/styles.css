@@ -1,0 +1,29 @@
+body{ 
+      font-size: 14px;
+  }
+td {  
+  font-size: 12px;
+}
+h1.title {
+  font-size: 38px;
+  color: DarkBlue;
+}
+h1 { 
+  font-size: 28px;
+  color: DarkBlue;
+}
+h2 { 
+    font-size: 22px;
+  color: DarkBlue;
+}
+h3 { 
+  font-size: 20px;
+  font-family: "Times New Roman", Times, serif;
+  color: DarkBlue;
+}
+code.r{ /* Code block */
+    font-size: 14px;
+}
+pre { /* Code block - determines code spacing between lines */
+    font-size: 16px;
+}

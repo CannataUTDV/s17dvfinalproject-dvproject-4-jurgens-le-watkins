@@ -1,7 +1,9 @@
 ---
 title: "Internet Connectivity and Usage Across the United States"
 author: "Robert Jurgens, Logan Watkins, Thu Le"
-output: html_document
+output:
+  html_document:
+    css: styles.css
 ---
 
 ```{r setup, include=FALSE}
