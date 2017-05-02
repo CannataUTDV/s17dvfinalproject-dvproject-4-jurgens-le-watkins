@@ -23,25 +23,28 @@ if(online0) {
 }
 state_list <- as.list(states$State)
 state_list <- append(list("All" = "All"), state_list)
+state_list1 <- state_list
+state_list2 <- state_list
+state_list3 <- state_list
 
 ##---------Starting Shiny Server Functions-----------------------------------------##
 
 shinyServer(function(input, output) {
   # These widgets are for the Choropleth Plots tab.
   online1 = reactive({input$rb1})
-  output$states1 <- renderUI({selectInput("selectedStates", "Choose States:", state_list, multiple = TRUE, selected='All') })
+  output$states1 <- renderUI({selectInput("selectedStates1", "Choose States:", state_list1, multiple = TRUE, selected='All') })
   
   # These widgets are for the Scatter Plots tab.
   online3 = reactive({input$rb3})
-  output$states3 <- renderUI({selectInput("selectedStates", "Choose States:", state_list, multiple = TRUE, selected='All') })
+  output$states3 <- renderUI({selectInput("selectedStates3", "Choose States:", state_list3, multiple = TRUE, selected='All') })
   
   # These widgets are for the Barcharts tab.
   online2 = reactive({input$rb2})
-  output$states2 <- renderUI({selectInput("selectedStates", "Choose States:", state_list, multiple = TRUE, selected='All') })
+  output$states2 <- renderUI({selectInput("selectedStates2", "Choose States:", state_list2, multiple = TRUE, selected='All') })
   # Begin Choropleth Plot tab ------------------------------------------------------------------
   dfbc3 <- eventReactive(input$click1, {
-    if(input$selectedStates == 'All') state_list <- input$selectedStates
-    else state_list <- append(list("Skip" = "Skip"), input$selectedStates)
+    if(input$selectedStates1 == 'All') state_list1 <- input$selectedStates1
+    else state_list1 <- append(list("Skip" = "Skip"), input$selectedStates1)
     if(online1() == "SQL") {
       print("Getting from data.world")
       tdf = query(
@@ -49,14 +52,14 @@ shinyServer(function(input, output) {
         dataset="thule179/s-17-dv-final-project", type="sql",
         query="SELECT State, InternetUsageAtHomeLevel,InternetUsageAtWorkLevel, InternetUsageLevel,YoungCategories FROM CleanedInternetUsageByState
         where ?= 'All' or State in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        queryParameters = state_list
+        queryParameters = state_list1
       ) # %>% View()
     }
     else {
       print("Getting from csv")
       file_path = "CleanedInternetUsageByState.csv"
       df <- readr::read_csv(file_path)
-      tdf = df %>% dplyr::filter(State %in% input$selectedStates | input$selectedStates == "All") # %>% View()
+      tdf = df %>% dplyr::filter(State %in% input$selectedStates1 | input$selectedStates1 == "All") # %>% View()
     }
     
     
@@ -92,8 +95,8 @@ shinyServer(function(input, output) {
   })
   # Begin ScatterPlot tab ------------------------------------------------------------------
   dfbc2 <- eventReactive(input$click3, {
-    if(input$selectedStates == 'All') state_list <- input$selectedStates
-    else state_list <- append(list("Skip" = "Skip"), input$selectedStates)
+    if(input$selectedStates3 == 'All') state_list3 <- input$selectedStates3
+    else state_list3 <- append(list("Skip" = "Skip"), input$selectedStates3)
     if(online3() == "SQL") {
       print("Getting from data.world")
       tdf = query(
@@ -101,14 +104,14 @@ shinyServer(function(input, output) {
         dataset="thule179/s-17-dv-final-project", type="sql",
         query="SELECT State, Avg_InternetUsage,PerCapitaIncome, Avg_InternetUsageAtCoffeeShops,male20to29,female20to29,male10to19,female10to19,TotalPopulation FROM CleanedInternetUsageByState
         where ?= 'All' or State in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        queryParameters = state_list
+        queryParameters = state_list3
       ) # %>% View()
     }
     else {
       print("Getting from csv")
       file_path = "CleanedInternetUsageByState.csv"
       df <- readr::read_csv(file_path)
-      tdf = df %>% dplyr::filter(State %in% input$selectedStates | input$selectedStates == "All") # %>% View()
+      tdf = df %>% dplyr::filter(State %in% input$selectedStates3 | input$selectedStates3 == "All") # %>% View()
     }
     
     
@@ -133,12 +136,13 @@ shinyServer(function(input, output) {
   output$scatterPlot2 <- renderPlotly({
     df2 <- dfbc2()
     df2$adult20to29 <- df2$male20to29 + df2$female20to29
-    p <- plot_ly(x = ~list(df2$Avg_InternetUsage), y = ~list(df2$Avg_InternetUsageAtCoffeeShops), z = ~list(df2$adult20to29),marker = list(color = ~mpg, colorscale = c('#FFE1A1', '#683531'), showscale = FALSE), hoverinfo = 'text', text = ~paste('Internet Usage (Avg): ', df2$Avg_InternetUsage, '</br>Coffee Shops (Avg): ', df2$Avg_InternetUsageAtCoffeeShops,'</br> Young Adult Population: ', df2$df2$adult20to29), color = df2$State) %>%add_markers() %>%layout(scene = list(xaxis = list(title = 'Avg_InternetUsage'),yaxis = list(title = 'CoffeeShops'),zaxis = list(title = 'Young adult')))
+    p <- plot_ly(x = ~list(df2$Avg_InternetUsage), y = ~list(df2$Avg_InternetUsageAtCoffeeShops), z = ~list(df2$adult20to29),marker = list(color = ~mpg, colorscale = c('#FFE1A1', '#683531'), showscale = FALSE), hoverinfo = 'text', text = ~paste('Internet Usage (Avg): ', df2$Avg_InternetUsage, '</br>Coffee Shops (Avg): ', df2$Avg_InternetUsageAtCoffeeShops,'</br> Young Adult Population: ', df2$adult20to29), color = df2$State) %>%add_markers() %>%layout(scene = list(xaxis = list(title = 'Avg_InternetUsage'),yaxis = list(title = 'CoffeeShops'),zaxis = list(title = 'Young adult')))
     p
     
   })
   
   output$scatterPlot3 <- renderPlotly({
+    df2 <- dfbc2()
     young <- df2 %>% select(State,male10to19,male20to29,female10to19,female20to29, TotalPopulation) %>% mutate(youngPerPop = (male10to19+male20to29+female10to19+female20to29)/TotalPopulation) %>% group_by(State)
     plotThing <- ggplot(df2, aes(x = df2$TotalPopulation, y = df2$Avg_InternetUsage )) + geom_point(aes(color = log(df2$TotalPopulation), size = log(TotalPopulation)),position = "jitter")+geom_text(aes(label=df2$State),hjust=2, vjust=-2) +scale_y_log10()+scale_x_log10()
     ggplotly(plotThing)
@@ -148,8 +152,8 @@ shinyServer(function(input, output) {
   
   # Begin Barchart Tab ------------------------------------------------------------------
   dfbc1 <- eventReactive(input$click2, {
-    if(input$selectedStates == 'All') state_list <- input$selectedStates
-    else state_list <- append(list("Skip" = "Skip"), input$selectedStates)
+    if(input$selectedStates2 == 'All') state_list2 <- input$selectedStates2
+    else state_list2 <- append(list("Skip" = "Skip"), input$selectedStates2)
     if(online2() == "SQL") {
       print("Getting from data.world")
       tdf = query(
@@ -157,14 +161,14 @@ shinyServer(function(input, output) {
         dataset="thule179/s-17-dv-final-project", type="sql",
         query="SELECT State, TotalPopulation,InternetUsage,Avg_InternetUsage,NoConnectionAnywhere,NoHomeConnection_ConnectElseWhere,ConnectAtHomeOnly,YoungProportion FROM CleanedInternetUsageByState
         where ?= 'All' or State in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        queryParameters = state_list
+        queryParameters = state_list2
       ) # %>% View()
     }
     else {
       print("Getting from csv")
       file_path = "CleanedInternetUsageByState.csv"
       df <- readr::read_csv(file_path)
-      tdf = df %>% dplyr::filter(State %in% input$selectedStates | input$selectedStates == "All") # %>% View()
+      tdf = df %>% dplyr::filter(State %in% input$selectedStates2 | input$selectedStates2 == "All") # %>% View()
     }
     
     
