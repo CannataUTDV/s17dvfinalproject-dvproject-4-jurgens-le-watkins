@@ -344,6 +344,7 @@ data("continental_us_states")
 c1 <- state_choropleth(df3,
                       zoom = continental_us_states)
 c1 + scale_fill_brewer(type = "seq", palette = 12) + labs(fill = "Internet Usage (Home/Work)")
+c1
 
 ```
 
