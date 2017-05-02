@@ -337,6 +337,7 @@ Now we have a nicely formatted csv file ready for analysis!
 # IV. Data Analysis
 ## Key Findings:
 
+### Low internet usage in Southern area of United States
 + The first interesting analysis we discovered was a trend of **low internet usage at both home and work** in the southern and southwestern regions of the United States. Similarly, there is **high internet usage levels at home and work** in the northeastern area of the United States as well as the area from Minnesota to Illinois. In general, it seems like the **further north you are in the United States, the higher internet usage levels there are.** This may be due to the fact that people in the South are more likely to live and work in rural lifestyles than the northern states. Note that darker colors represent higher internet usage rates.
 ```{r, message=FALSE, echo = FALSE, fig.width=10, fig.height = 10, fig.align='center'}
 df3 <- data.frame(state = df2$State, interaction(df2$InternetUsageAtHomeLevel, df2$InternetUsageAtWorkLevel))
@@ -352,6 +353,8 @@ c1
 
 ```
 
+*****
+### Internet Usage vs Young People Population
 + After viewing this choroplethr map and seeing areas with high and low internet usage, we decided to make a bar chart to view overall internet trends, including the states with the high overall internet usage. As seen in the previous map, **Vermont, New Hampshire, Minnesota, and Wisconsin have the highest overall internet usage, while Mississippi, Alabama, Tennessee, and Hawaii have the lowest overall internet usage.**
 
 ```{r, message=FALSE, echo = FALSE, fig.width=10, fig.height = 10, fig.align='center'}
@@ -379,7 +382,8 @@ YoungPeople_bar
 
 ```
 
-
+***
+### 3-D Scatterplot - Young People vs Income vs Internet Usage
 + Finally, in order to get a look at the data from all angles, we created a 3d scatterplot in plotly with population, home internet usage, and work internet usage. Notice there is an extreme outlier (drag and drop the graph to see it better). This chart shows **how District of Colombia is drastically different from the 50 states in terms of young adult percentage.** It also shows that 
 **median income is positively correlated with internet usage.**
 
