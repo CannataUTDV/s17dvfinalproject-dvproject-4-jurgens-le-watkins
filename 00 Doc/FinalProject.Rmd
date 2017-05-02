@@ -7,6 +7,8 @@ output: html_document
 ```{r setup, include=FALSE}
 source("Required.R")
 source("getToken.R")
+library(knitr)
+opts_chunk$set(out.width='1750px', dpi=200)
 ```
 
 # I. Session Info
@@ -334,7 +336,7 @@ Now we have a nicely formatted csv file ready for analysis!
 ## Key Findings:
 
 + The first interesting analysis we discovered was a trend of **low internet usage at both home and work** in the southern and southwestern regions of the United States. Similarly, there is **high internet usage levels at home and work** in the northeastern area of the United States as well as the area from Minnesota to Illinois. In general, it seems like the **further north you are in the United States, the higher internet usage levels there are.** This may be due to the fact that people in the South are more likely to live and work in rural lifestyles than the northern states. Note that darker colors represent higher internet usage rates.
-```{r, message=FALSE, echo = FALSE, fig.width=12, fig.height = 12, fig.align='center'}
+```{r, message=FALSE, echo = FALSE, fig.width=8, fig.height = 8, fig.align='center'}
 df3 <- data.frame(state = df2$State, interaction(df2$InternetUsageAtHomeLevel, df2$InternetUsageAtWorkLevel))
 names(df3) <- c("region", "value")
 df3$value <- factor(df3$value, levels = c("Low.Low", "Low.Medium", "Low.High", "Medium.Low", "Medium.Medium", "Medium.High", "High.Low", "High.Medium", "High.High"))
@@ -348,7 +350,18 @@ c1
 
 ```
 
-+
++ After viewing this choroplethr map and seeing areas with high and low internet usage, we decided to make a bar chart to view overall internet trends, including the states with the high overall internet usage. As seen in the previous map, **Vermont, New Hampshire, Minnesota, and Wisconsin have the highest overall internet usage, while Mississippi, Alabama, Tennessee, and Hawaii have the lowest overall internet usage.**
+
+```{r, message=FALSE, echo = FALSE, fig.width=8, fig.height = 8, fig.align='center'}
+df3 <- df2%>%select(State,Avg_InternetUsage)
+df3$InternetUsage_z <-  round((df3$Avg_InternetUsage - mean(df3$Avg_InternetUsage))/sd(df3$Avg_InternetUsage), 2)  # compute normalized Internet Usage
+df3$InternetUsage_type <- ifelse(df3$InternetUsage_z < 0, "below", "above")  # above / below avg flag
+df3 <- df3[order(df3$InternetUsage_z), ]  # sort
+df3$State <- factor(df3$State, levels = unique(df3$State)[order(df3$InternetUsage_z)]) 
+                  
+InternetUsage_bar <- ggplot(df3, aes(x=State, y=InternetUsage_z, label=InternetUsage_z)) + geom_bar(stat='identity', aes(fill=InternetUsage_type), width=.5)  +scale_fill_manual(name="Internet Usage", labels = c("Above Average", "Below Average"), values = c("above"="#00ba38", "below"="#f8766d")) + coord_flip()
+InternetUsage_bar
+```
 
 +
 

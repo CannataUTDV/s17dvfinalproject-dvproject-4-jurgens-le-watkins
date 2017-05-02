@@ -26,10 +26,9 @@ df3 <- df2%>%select(State,Avg_InternetUsage)
 df3$InternetUsage_z <-  round((df3$Avg_InternetUsage - mean(df3$Avg_InternetUsage))/sd(df3$Avg_InternetUsage), 2)  # compute normalized Internet Usage
 df3$InternetUsage_type <- ifelse(df3$InternetUsage_z < 0, "below", "above")  # above / below avg flag
 df3 <- df3[order(df3$InternetUsage_z), ]  # sort
-df3$State <- factor(df3$State, levels = df3$State) 
-
+df3$State <- factor(df3$State, levels = unique(df3$State)[order(df3$InternetUsage_z)]) 
+                  
 InternetUsage_bar <- ggplot(df3, aes(x=State, y=InternetUsage_z, label=InternetUsage_z)) + geom_bar(stat='identity', aes(fill=InternetUsage_type), width=.5)  +scale_fill_manual(name="Internet Usage", labels = c("Above Average", "Below Average"), values = c("above"="#00ba38", "below"="#f8766d")) + coord_flip()
-
 InternetUsage_bar
 
 # plot #4 - Diverging bar chart - Young People Proportion
