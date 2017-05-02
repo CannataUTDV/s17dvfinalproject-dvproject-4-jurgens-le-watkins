@@ -1,6 +1,6 @@
 # server.R
 source("./Required.R")
-
+# run this line in your console to display source code - runApp('GitHub/s17dvfinalproject-dvproject-4-jurgens-le-watkins/02 Shiny',display.mode="showcase")
 online0 = TRUE
 
 # Server.R structure:
@@ -38,6 +38,8 @@ shinyServer(function(input, output) {
   # These widgets are for the Choropleth Plots tab.
   online1 = reactive({input$rb1})
   output$states1 <- renderUI({selectInput("selectedStates1", "Choose States:", state_list1, multiple = TRUE, selected='All') })
+  UsageLevel= reactive({input$selectedUsageLevels})
+  YoungCategory = reactive({input$selectedYoungCategories})
   
   # These widgets are for the Scatter Plots tab.
   online3 = reactive({input$rb3})
@@ -126,6 +128,19 @@ shinyServer(function(input, output) {
       tdf = df %>% dplyr::filter(State %in% input$selectedStates1 | input$selectedStates1 == "All") # %>% View()
     }
     
+  })
+  ## --- check boxes of Internet Usage Levels --- ##
+  dfbc3_1 <- eventReactive(input$click_v1, {
+    print("Getting from data.world")
+    print(UsageLevel())
+    print(YoungCategory())
+    tdf = query(
+      connection = conn,
+      dataset="thule179/s-17-dv-final-project", type="sql",
+      query="select InternetUsageLevel,YoungCategories,State FROM CleanedInternetUsageByState
+      where cast(InternetUsageLevel as string) in (?, ?, ?) or cast(YoungCategories as string) in (?,?,?)",
+      queryParameters = as.list(UsageLevel(), YoungCategory())
+    )
     
   })
   
@@ -135,6 +150,17 @@ shinyServer(function(input, output) {
   })
   
   output$choroplethPlot1 <- renderPlot({
+    df4 <- dfbc3_1()
+    df4 <- data.frame(state = df4$State, Young = interaction(df4$InternetUsageLevel, df4$YoungCategories))
+    names(df4) <- c("region", "value")
+    df4$value <- factor(df4$value)
+    df4$region <- tolower(df4$region)
+    data("continental_us_states")
+    c2 <- state_choropleth(df4, zoom = continental_us_states)
+    c2
+  })
+  
+  output$choroplethPlot2 <- renderPlot({
     df3 <- dfbc3()
     df3 <- data.frame(state = df3$State, interaction(df3$InternetUsageAtHomeLevel, df3$InternetUsageAtWorkLevel))
     names(df3) <- c("region", "value")
@@ -146,17 +172,6 @@ shinyServer(function(input, output) {
     c1 + scale_fill_brewer(type = "seq", palette = 12)
   })
   
-  output$choroplethPlot2 <- renderPlot({
-    df4 <- dfbc3()
-    df4 <- data.frame(state = df4$State, Young = interaction(df4$InternetUsageLevel, df4$YoungCategories))
-    names(df4) <- c("region", "value")
-    df4$value <- factor(df4$value)
-    df4$region <- tolower(df4$region)
-    
-    c2 <- state_choropleth(df4,
-                           zoom = continental_us_states)
-    c2
-  })
   # Begin ScatterPlot tab ------------------------------------------------------------------
   dfbc2 <- eventReactive(input$click3, {
     if(input$selectedStates3 == 'All') state_list3 <- input$selectedStates3

@@ -10,10 +10,10 @@ dashboardPage(
   ),
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Box Plots", tabName = "boxplot", icon = icon("dashboard")),
-      menuItem("Choropleths", tabName = "choropleth", icon = icon("dashboard")),
-      menuItem("Scatter Plots", tabName = "scatter", icon = icon("dashboard")),
-      menuItem("Barcharts", tabName = "barchart", icon = icon("dashboard"))
+      menuItem("Box Plots", tabName = "boxplot", icon = icon("archive")),
+      menuItem("Choropleths", tabName = "choropleth", icon = icon("map")),
+      menuItem("Scatter Plots", tabName = "scatter", icon = icon("line-chart")),
+      menuItem("Barcharts", tabName = "barchart", icon = icon("bar-chart"))
     )
   ),
   dashboardBody(
@@ -58,7 +58,10 @@ dashboardPage(
                          DT::dataTableOutput("choroplethData1"),
                          hr()
                 ),
-                tabPanel("Internet Usage", plotOutput("choroplethPlot1", height=700),plotOutput("choroplethPlot2", height=700))
+                tabPanel("Internet Usage and Young Proportion", checkboxGroupInput("selectedUsageLevels", label = "Usage Levels", 
+                                                                                   choices = list("Low","Medium","High")), checkboxGroupInput("selectedYoungCategories", label = "Young Categories", 
+                                                                                                                                              choices = list("Low","Medium","High")),actionButton(inputId = "click_v1", label = "Pick Usage Level(s) and Young Category"), plotOutput("choroplethPlot1",heigh=700)),
+                tabPanel("Internet Usage at Home and Work", plotOutput("choroplethPlot2", height=700))
               )
       ),
       ## -- Scatterplot --##
@@ -103,6 +106,8 @@ dashboardPage(
       )
       # End Barchart tab content.
     )
-  )
+  ), skin = "purple"
 )
+
+
 
