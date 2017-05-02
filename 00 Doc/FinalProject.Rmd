@@ -338,7 +338,7 @@ Now we have a nicely formatted csv file ready for analysis!
 ## Key Findings:
 
 + The first interesting analysis we discovered was a trend of **low internet usage at both home and work** in the southern and southwestern regions of the United States. Similarly, there is **high internet usage levels at home and work** in the northeastern area of the United States as well as the area from Minnesota to Illinois. In general, it seems like the **further north you are in the United States, the higher internet usage levels there are.** This may be due to the fact that people in the South are more likely to live and work in rural lifestyles than the northern states. Note that darker colors represent higher internet usage rates.
-```{r, message=FALSE, echo = FALSE, fig.width=8, fig.height = 8, fig.align='center'}
+```{r, message=FALSE, echo = FALSE, fig.width=10, fig.height = 10, fig.align='center'}
 df3 <- data.frame(state = df2$State, interaction(df2$InternetUsageAtHomeLevel, df2$InternetUsageAtWorkLevel))
 names(df3) <- c("region", "value")
 df3$value <- factor(df3$value, levels = c("Low.Low", "Low.Medium", "Low.High", "Medium.Low", "Medium.Medium", "Medium.High", "High.Low", "High.Medium", "High.High"))
@@ -354,7 +354,7 @@ c1
 
 + After viewing this choroplethr map and seeing areas with high and low internet usage, we decided to make a bar chart to view overall internet trends, including the states with the high overall internet usage. As seen in the previous map, **Vermont, New Hampshire, Minnesota, and Wisconsin have the highest overall internet usage, while Mississippi, Alabama, Tennessee, and Hawaii have the lowest overall internet usage.**
 
-```{r, message=FALSE, echo = FALSE, fig.width=8, fig.height = 8, fig.align='center'}
+```{r, message=FALSE, echo = FALSE, fig.width=10, fig.height = 10, fig.align='center'}
 df3 <- df2%>%select(State,Avg_InternetUsage)
 df3$InternetUsage_z <-  round((df3$Avg_InternetUsage - mean(df3$Avg_InternetUsage))/sd(df3$Avg_InternetUsage), 2)  # compute normalized Internet Usage
 df3$InternetUsage_type <- ifelse(df3$InternetUsage_z < 0, "below", "above")  # above / below avg flag
@@ -364,6 +364,22 @@ df3$State <- factor(df3$State, levels = unique(df3$State)[order(df3$InternetUsag
 InternetUsage_bar <- ggplot(df3, aes(x=State, y=InternetUsage_z, label=InternetUsage_z)) + geom_bar(stat='identity', aes(fill=InternetUsage_type), width=.5)  +scale_fill_manual(name="Internet Usage", labels = c("Above Average", "Below Average"), values = c("above"="#00ba38", "below"="#f8766d")) + coord_flip()
 InternetUsage_bar
 ```
+In order to further analyse these results, we can use the census data to view the proportion of young people for the Top 3 and Bottom 3 states by internet usage. Note that **the top two states by internet usage (New Hampshire, Vermont, ) have much lower proportions of young people than the bottom states (Alabama, Mississippi, Tennessee)**.
+
+```{r, message=FALSE, echo = FALSE, fig.width=10, fig.height = 10, fig.align='center'}
+df4 <- df2%>%select(State,YoungProportion)
+df4$YoungPeople_z <-  round((df4$YoungProportion - mean(df4$YoungProportion))/sd(df4$YoungProportion), 2)  # compute normalized Young Proportion
+df4$YoungPeople_type <- ifelse(df4$YoungPeople_z < 0, "below", "above")  # above / below avg flag
+df4 <- df4[order(df4$YoungPeople_z), ]  # sort
+df4$State <- factor(df4$State, levels = df4$State) 
+df5 <- df4[df4$State %in% c("Vermont", "New Hampshire", "Minnesota", "Mississippi", "Alabama", "Tennessee"),]
+
+YoungPeople_bar <- ggplot(df5, aes(x=State, y=YoungPeople_z, label=YoungPeople_z)) + geom_bar(stat='identity', aes(fill=YoungPeople_type), width=.5)  +scale_fill_manual(name="Young Proportion", labels = c("Above Average", "Below Average"), values = c("above"="#00ba38", "below"="#f8766d")) + coord_flip()
+YoungPeople_bar
+
+```
+
+
 
 +
 
