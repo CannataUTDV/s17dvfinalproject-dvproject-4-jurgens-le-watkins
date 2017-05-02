@@ -23,6 +23,7 @@ if(online0) {
 }
 state_list <- as.list(states$State)
 state_list <- append(list("All" = "All"), state_list)
+state_list0 <- state_list
 state_list1 <- state_list
 state_list2 <- state_list
 state_list3 <- state_list
@@ -30,6 +31,10 @@ state_list3 <- state_list
 ##---------Starting Shiny Server Functions-----------------------------------------##
 
 shinyServer(function(input, output) {
+  # These widgets are for the BoxPlots tab.
+  online0 = reactive({input$rb0})
+  output$states0 <- renderUI({selectInput("selectedStates0", "Choose States:", state_list0, multiple = TRUE, selected='All') })
+  
   # These widgets are for the Choropleth Plots tab.
   online1 = reactive({input$rb1})
   output$states1 <- renderUI({selectInput("selectedStates1", "Choose States:", state_list1, multiple = TRUE, selected='All') })
@@ -41,6 +46,65 @@ shinyServer(function(input, output) {
   # These widgets are for the Barcharts tab.
   online2 = reactive({input$rb2})
   output$states2 <- renderUI({selectInput("selectedStates2", "Choose States:", state_list2, multiple = TRUE, selected='All') })
+  
+  # Begin Box Plot tab ------------------------------------------------------------------
+  dfbc0 <- eventReactive(input$click0, {
+    if(input$selectedStates0 == 'All') state_list0 <- input$selectedStates0
+    else state_list0 <- append(list("Skip" = "Skip"), input$selectedStates0)
+    if(online0() == "SQL") {
+      print("Getting from data.world")
+      tdf = query(
+        connection=conn,
+        dataset="thule179/s-17-dv-final-project", type="sql",
+        query="SELECT State, InternetUsageAtHomeLevel,InternetUsageAtWorkLevel, InternetUsageLevel,InternetUsageAtCoffeeShops , male0to9,male10to19, male20to29,male30to39, male40to49, male50to59, male60to69, male70to79, male80andUp,TenToThirtyK, ThirtyToFiftyK, FiftyToHundredK, HundredToHundredFiftyK, HundredFiftyPlus FROM CleanedInternetUsageByState
+        where ?= 'All' or State in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        queryParameters = state_list0
+      ) # %>% View()
+    }
+    else {
+      print("Getting from csv")
+      file_path = "CleanedInternetUsageByState.csv"
+      df <- readr::read_csv(file_path)
+      tdf = df %>% dplyr::filter(State %in% input$selectedStates0 | input$selectedStates0 == "All") # %>% View()
+    }
+    
+    
+  })
+  
+  output$boxplotData1 <- renderDataTable({DT::datatable(dfbc0(),
+                                                           rownames = FALSE,
+                                                           extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
+  })
+  
+  output$boxPlot1 <- renderPlotly({
+    df2 <- dfbc0()
+    df3 <- data.frame(df2%>%select(State , male0to9,male10to19, male20to29,male30to39, male40to49, male50to59, male60to69, male70to79, male80andUp))
+    df3 <- tidyr::gather(df3, ageGroup, number, 2:10)
+    
+    p1 <- ggplot(df3, aes(x = ageGroup, y = number, color = ageGroup)) + geom_boxplot()
+    ggplotly(p1)
+    
+  })
+  output$boxPlot2 <- renderPlotly({
+    df2 <- dfbc0()
+    df4 <- data.frame(df2%>%select(InternetUsageAtHome, InternetUsageAtWork, InternetUsageAtCoffeeShops))
+    df4 <- tidyr::gather(df4, Usage, number, 1:3)
+    
+    p2 <- ggplot(df4, aes(x = Usage, y = sqrt(number), color = Usage)) + geom_boxplot()
+    ggplotly(p2)
+    
+  })
+  output$boxPlot3 <- renderPlot({
+    df2 <- dfbc0()
+    df5 <- data.frame(df2$TenToThirtyK, df2$ThirtyToFiftyK, df2$FiftyToHundredK, df2$HundredToHundredFiftyK, df2$HundredFiftyPlus)
+    
+    df5 <- tidyr::gather(df5, Income, number, 1:5)
+    
+    df5$Income <- factor(df5$Income, levels = c("df2.TenToThirtyK", "df2.ThirtyToFiftyK", "df2.FiftyToHundredK", "df2.HundredToHundredFiftyK", "df2.HundredFiftyPlus"))
+    
+    p3 <- ggplot(df5, aes(x = Income, y = log(number), color = Income)) + geom_boxplot()
+    p3
+  })
   # Begin Choropleth Plot tab ------------------------------------------------------------------
   dfbc3 <- eventReactive(input$click1, {
     if(input$selectedStates1 == 'All') state_list1 <- input$selectedStates1

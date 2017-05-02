@@ -23,6 +23,26 @@ dashboardPage(
     ),    
     tabItems(
       # Begin tab content.
+      ## -- Boxplot --##
+      tabItem(tabName = "boxplot",
+              tabsetPanel(
+                tabPanel("Data",  
+                         radioButtons("rb0", "Get data from:",
+                                      c("SQL" = "SQL",
+                                        "CSV" = "CSV"), inline=T),
+                         uiOutput("states0"), # See http://shiny.rstudio.com/gallery/dynamic-ui.html
+                         actionButton(inputId = "click0",  label = "To get data, click here"),
+                         hr(), # Add space after button.
+                         'Here is data for the boxplots',
+                         hr(),
+                         DT::dataTableOutput("boxplotData1"),
+                         hr()
+                ),
+                tabPanel("Age Group Distribution", plotlyOutput("boxPlot1", height=700)),
+                tabPanel("Internet Usage", plotlyOutput("boxPlot2",height=700)),
+                tabPanel("Income Distribution", plotOutput("boxPlot3",height=700))
+              )
+      ),
       ## -- Choropleth --##
       tabItem(tabName = "choropleth",
               tabsetPanel(
