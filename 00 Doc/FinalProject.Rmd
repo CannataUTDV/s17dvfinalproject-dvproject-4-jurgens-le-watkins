@@ -362,7 +362,7 @@ df3$State <- factor(df3$State, levels = unique(df3$State)[order(df3$InternetUsag
 InternetUsage_bar <- ggplot(df3, aes(x=State, y=InternetUsage_z, label=InternetUsage_z)) + geom_bar(stat='identity', aes(fill=InternetUsage_type), width=.5)  +scale_fill_manual(name="Internet Usage", labels = c("Above Average", "Below Average"), values = c("above"="#00ba38", "below"="#f8766d")) + coord_flip()
 InternetUsage_bar
 ```
-In order to further analyse these results, we can use the census data to view the proportion of young people for the Top 3 and Bottom 3 states by internet usage. Note that **the top two states by internet usage (New Hampshire, Vermont, ) have much lower proportions of young people than the bottom states (Alabama, Mississippi, Tennessee)**.
+In order to further analyse these results, we can use the census data to view the proportion of young people for the Top 3 and Bottom 3 states by internet usage. Note that **the top two states by internet usage (New Hampshire, Vermont) have much lower proportions of young people than the bottom states (Alabama, Mississippi, Tennessee)**.
 
 ```{r, message=FALSE, echo = FALSE, fig.width=10, fig.height = 10, fig.align='center'}
 df4 <- df2%>%select(State,YoungProportion)
@@ -378,7 +378,29 @@ YoungPeople_bar
 ```
 
 
++ Finally, in order to get a look at the data from all angles, we created a 3d scatterplot in plotly with population, home internet usage, and work internet usage. Notice there is an extreme outlier (drag and drop the graph to see it better). This chart shows **how District of Colombia is drastically different from the 50 states in terms of young adult percentage.** It also shows that 
+**median income is positively correlated with internet usage.**
 
-+
+```{r, message=FALSE, echo = FALSE, fig.width=4, fig.height = 4, fig.align='center'}
 
-### Other Observations
+df2$adult20to29 <- df2$male20to29 + df2$female20to29
+df2$youngAdultPercentage <- df2$adult20to29 / df2$TotalPopulation
+normalize <- function(x){
+  return((x - mean(x)) / sd(x))
+}
+df2$normalizedIncome <- normalize(df2$PerCapitaIncome)
+p <- plot_ly(x = ~list(df2$Avg_InternetUsage), 
+             y = ~list(df2$normalizedIncome), 
+             z = ~list(df2$youngAdultPercentage),
+             marker = list(color = ~mpg, colorscale = c('#FFE1A1', '#683531'), showscale = FALSE), 
+             hoverinfo = 'text', 
+             text = ~paste('Internet Usage (Avg) : ', df2$Avg_InternetUsage, 
+                           '</br>Per Capita Income : ', df2$PerCapitaIncome,
+                           '</br> Young Adult Percentage : ', df2$youngAdultPercentage,
+                           '</br> State : ', df2$State), color = df2$State) %>% 
+             add_markers() %>% 
+             layout(scene = list(xaxis = list(title = 'Average Internet Usage'),
+                                      yaxis = list(title = 'Median Income'),
+                                      zaxis = list(title = 'Young Adult Percentage')))
+p
+```

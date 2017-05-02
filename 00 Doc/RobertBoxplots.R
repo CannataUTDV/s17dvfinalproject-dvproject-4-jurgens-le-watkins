@@ -21,7 +21,7 @@ df4 <- tidyr::gather(df4, Usage, number, 1:3)
 p2 <- ggplot(df4, aes(x = Usage, y = sqrt(number), color = Usage)) + geom_boxplot()
 ggplotly(p2)
 
-# Boxplot 3 #
+# Boxplot 3 # 
 df5 <- data.frame(df2$TenToThirtyK, df2$ThirtyToFiftyK, df2$FiftyToHundredK, df2$HundredToHundredFiftyK, df2$HundredFiftyPlus)
 
 df5 <- tidyr::gather(df5, Income, number, 1:5)

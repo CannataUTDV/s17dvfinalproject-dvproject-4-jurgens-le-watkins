@@ -37,8 +37,9 @@ df4$YoungPeople_z <-  round((df4$YoungProportion - mean(df4$YoungProportion))/sd
 df4$YoungPeople_type <- ifelse(df4$YoungPeople_z < 0, "below", "above")  # above / below avg flag
 df4 <- df4[order(df4$YoungPeople_z), ]  # sort
 df4$State <- factor(df4$State, levels = df4$State) 
+df5 <- df4[df4$State %in% c("Vermont", "New Hampshire", "Minnesota", "Mississippi", "Alabama", "Tennessee"),]
 
-YoungPeople_bar <- ggplot(df4, aes(x=State, y=YoungPeople_z, label=YoungPeople_z)) + geom_bar(stat='identity', aes(fill=YoungPeople_type), width=.5)  +scale_fill_manual(name="Young Proportion", labels = c("Above Average", "Below Average"), values = c("above"="#00ba38", "below"="#f8766d")) + coord_flip()
+YoungPeople_bar <- ggplot(df5, aes(x=State, y=YoungPeople_z, label=YoungPeople_z)) + geom_bar(stat='identity', aes(fill=YoungPeople_type), width=.5)  +scale_fill_manual(name="Young Proportion", labels = c("Above Average", "Below Average"), values = c("above"="#00ba38", "below"="#f8766d")) + coord_flip()
 YoungPeople_bar
 
 
