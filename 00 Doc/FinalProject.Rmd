@@ -5,6 +5,18 @@ output:
   html_document:
     css: styles.css
 ---
+```{r}
+
+#  _____         _                  _        _                                   _______  _            
+# |  __ \       | |                | |      | |                                 |__   __|| |           
+# | |__) | ___  | |__    ___  _ __ | |_     | |      ___    __ _   __ _  _ __      | |   | |__   _   _ 
+# |  _  / / _ \ | '_ \  / _ \| '__|| __|    | |     / _ \  / _` | / _` || '_ \     | |   | '_ \ | | | |
+# | | \ \| (_) || |_) ||  __/| |   | |_  _  | |____| (_) || (_| || (_| || | | | _  | |   | | | || |_| |
+# |_|  \_\\___/ |_.__/  \___||_|    \__|( ) |______|\___/  \__, | \__,_||_| |_|( ) |_|   |_| |_| \__,_|
+#                                       |/                  __/ |              |/                         
+#                                                          |___/               
+```
+
 
 ```{r setup, include=FALSE}
 source("Required.R")
@@ -349,7 +361,6 @@ data("continental_us_states")
 c1 <- state_choropleth(df3,
                       zoom = continental_us_states)
 c1 + scale_fill_brewer(type = "seq", palette = 12) + labs(fill = "Internet Usage (Home/Work)")
-c1
 
 ```
 
