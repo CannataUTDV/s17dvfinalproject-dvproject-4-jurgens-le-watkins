@@ -1,6 +1,6 @@
 # server.R
 source("./Required.R")
-# run this line in your console to display source code - runApp('GitHub/s17dvfinalproject-dvproject-4-jurgens-le-watkins/02 Shiny',display.mode="showcase")
+# run this line in your console to display source code - shiny::runApp('GitHub/s17dvfinalproject-dvproject-4-jurgens-le-watkins/02 Shiny',display.mode="showcase")
 online0 = TRUE
 
 # Server.R structure:

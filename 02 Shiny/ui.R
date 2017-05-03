@@ -60,8 +60,7 @@ dashboardPage(
                          hr()
                 ),
                 tabPanel("Internet Usage and Young Proportion", checkboxGroupInput("selectedUsageLevels", label = "Usage Levels", 
-                                                                                   choices = list("Low","Medium","High")), checkboxGroupInput("selectedYoungCategories", label = "Young Categories", 
-                                                                                                                                              choices = list("Low","Medium","High")),actionButton(inputId = "click_v1", label = "Pick Usage Level(s) and Young Category"), plotOutput("choroplethPlot1",heigh=700)),
+                                                                                   choices = list("Low","Medium","High")),actionButton(inputId = "click_v1", label = "Pick Usage Level(s) and Young Category"), plotOutput("choroplethPlot1",heigh=700)),
                 tabPanel("Internet Usage at Home and Work", plotOutput("choroplethPlot2", height=700))
               )
       ),
