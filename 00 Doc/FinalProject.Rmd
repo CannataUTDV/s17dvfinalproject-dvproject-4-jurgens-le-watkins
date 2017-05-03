@@ -423,20 +423,3 @@ p <- plot_ly(x = ~list(df2$Avg_InternetUsage),
                                       zaxis = list(title = 'Young Adult Percentage')))
 p
 ```
-
-## Other Findings
-### Internet Connection at Home
-+ Alaska, Mississippi, Montana, Alabama have the highest percentage of households without a home internet connection.
-![](plot4tableau.png)
-
-### Internet Usage per Capita Income
-+ Washington DC,Maryland , Massachusetts, and Connecticut have both high per capita income and average internet usage.
-![](plot3tableau.png)
-
-### Internet Usage at Home and Work Ratio
-+ Washington DC has the highest internet usage at work /  internet usage at home. This means that households living in Washing DC will tend to use the internet at work more than at home. It might be because people living in this state tend to spend more time being at the office than being at home.
-![](plot2tableau.png)
-
-### Facebook Usage
-+ Vermont, Illinois,and Georgia have the highest average number of facebook traffic.
-![](plot1tableau.png)
