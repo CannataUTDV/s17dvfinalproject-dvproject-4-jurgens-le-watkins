@@ -1,0 +1,19 @@
+diff a/00 Doc/FinalProject.Rmd b/00 Doc/FinalProject.Rmd	(rejected hunks)
+@@ -362,17 +362,8 @@
+                       zoom = continental_us_states)
+ c1 + scale_fill_brewer(type = "seq", palette = 12) + labs(fill = "Internet Usage (Home/Work)")
+ 
+-
+ ```
+ 
+-![](plot4tableau.png)</center>
+-
+-+ The tableau plot shows the percentage of people with no internet connection per each state. The red states have a higher percentage of people with no connection than green states. **Most of the more expansive states such as Alaska, Texas, and Montanna, understabily have a higher percenatage of no internet connection.** Another notable takeaway, that could possibly pair with the first key finding is the seemingly **higher percentage of no internet connection in the southeast**. Perhaps this could be one of the reasons why the region also has lower overall internet usage.
+-
+-
+-
+-
+-
+ *****
+ ### Internet Usage vs Young People Population
+ + After viewing this choroplethr map and seeing areas with high and low internet usage, we decided to make a bar chart to view overall internet trends, including the states with the high overall internet usage. As seen in the previous map, **Vermont, New Hampshire, Minnesota, and Wisconsin have the highest overall internet usage, while Mississippi, Alabama, Tennessee, and Hawaii have the lowest overall internet usage.**
