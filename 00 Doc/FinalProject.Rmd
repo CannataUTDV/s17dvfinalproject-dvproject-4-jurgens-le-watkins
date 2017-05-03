@@ -31,7 +31,7 @@ http://www.governing.com/gov-data/internet-usage-by-state.html</br>
 https://www.ntia.doc.gov/data/digital-nation-data-explorer#sel=tvBoxUser&disp=map
 
 To download the clean data (what was used in Tableau) download CleanedInternetUsageBySatet.csv from the <b>data.world</b> link.
-https://data.world/lowatt/s-17-dv-project-6 and download ASM_2015_31AS101_with_ann.csv.
+https://data.world/thule179/s-17-dv-final-project and download CleanedInternetUsageByStateWithHEX.csv.
 
 This data describes Internet Usage and Connectivity across the United States from July 2015 to October 2016. The columns that we used were a combination of the census population data,income data, internet usage and connectivity data.
 
