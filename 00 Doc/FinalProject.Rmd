@@ -4,8 +4,9 @@ author: "Robert Jurgens, Logan Watkins, Thu Le"
 output:
   html_document:
     css: styles.css
+    toc: yes
 ---
-
+<center>![internet-america](internet-america.jpg)</center>
 ```{r setup, include=FALSE}
 source("Required.R")
 source("getToken.R")
@@ -349,9 +350,17 @@ data("continental_us_states")
 c1 <- state_choropleth(df3,
                       zoom = continental_us_states)
 c1 + scale_fill_brewer(type = "seq", palette = 12) + labs(fill = "Internet Usage (Home/Work)")
-c1
+
 
 ```
+
+![](plot4tableau.png)</center>
+
++ The tableau plot shows the percentage of people with no internet connection per each state. The red states have a higher percentage of people with no connection than green states. **Most of the more expansive states such as Alaska, Texas, and Montanna, understabily have a higher percenatage of no internet connection.** Another notable takeaway, that could possibly pair with the first key finding is the seemingly **higher percentage of no internet connection in the southeast**. Perhaps this could be one of the reasons why the region also has lower overall internet usage.
+
+
+
+
 
 *****
 ### Internet Usage vs Young People Population
@@ -410,3 +419,18 @@ p <- plot_ly(x = ~list(df2$Avg_InternetUsage),
                                       zaxis = list(title = 'Young Adult Percentage')))
 p
 ```
+
+***
+# V. Other Interesting Visualizations
+
+### Facebook Usage Across the US
++ This tableau plot essentially shows the percentage of facebook users per state across the country. The states with a color that is more blue has a lower percentage of facebook users than states with a green color. States in the grey are more near the average percentage of users **Notice that the southeastern US tends to have a lower or average percentage of users with the exception of Georgia. Hawaii and Alaska also have some of the highest average amount of Facebook users as well.** 
+![](plot1tableau.png)</center>
+
+### Internet Usage at Work vs. Home
++ This tableau plot essentially shows the amount of people who use the internet at work over the amount of people who use it at home. **The most interesting takeaway is how Washington DC has the highest percentage** This makes sense considering that this is the hub of government for the country.
+![](plot2tableau.png)</center>
+
+### State Per Capita Income with Internet Usage
++ This tableau plot shows two variables for each state. The per capita income is represented by the size of the square whereas the internet usage for each state is represented by the color. The more green the square is the higher the usage of the internet. The more red the square the lower the internet usage. **The northeast area stands out as an area of high per capita income and high internet usage**
+![](plot3tableau.png)</center>
