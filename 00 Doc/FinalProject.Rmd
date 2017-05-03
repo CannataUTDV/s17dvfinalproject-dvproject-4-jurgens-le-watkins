@@ -4,11 +4,13 @@ author: "Robert Jurgens, Logan Watkins, Thu Le"
 output:
   html_document:
     css: styles.css
-    toc: true
+    toc: yes
   html_notebook:
     css: styles.css
-    toc: true
+    toc: yes
 ---
+
+<b>Link to Shiny App:</b> https://thule179.shinyapps.io/internetusage/
 
 ```{r setup, include=FALSE}
 source("Required.R")
