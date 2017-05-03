@@ -34,6 +34,7 @@ shinyServer(function(input, output) {
   # These widgets are for the BoxPlots tab.
   online0 = reactive({input$rb0})
   output$states0 <- renderUI({selectInput("selectedStates0", "Choose States:", state_list0, multiple = TRUE, selected='All') })
+  AvgPoint = reactive({input$UsageRange}) 
   
   # These widgets are for the Choropleth Plots tab.
   online1 = reactive({input$rb1})
@@ -70,8 +71,15 @@ shinyServer(function(input, output) {
       tdf = df %>% dplyr::filter(State %in% input$selectedStates0 | input$selectedStates0 == "All") # %>% View()
     }
     
-    
   })
+  
+  dfbc0_v1 <- eventReactive(input$click0_v1, {
+    print("Getting from data.world")
+    df = query(
+        connection = conn,
+        dataset="thule179/s-17-dv-final-project", type="sql",
+        query="select State, InternetUsageAtHome , InternetUsageAtWork, InternetUsageAtCoffeeShops FROM CleanedInternetUsageByState")
+     })
   
   output$boxplotData1 <- renderDataTable({DT::datatable(dfbc0(),
                                                            rownames = FALSE,
@@ -88,14 +96,16 @@ shinyServer(function(input, output) {
     
   })
   output$boxPlot2 <- renderPlotly({
-    df2 <- dfbc0()
+    df2 <- dfbc0_v1()
     df4 <- data.frame(df2%>%select(InternetUsageAtHome, InternetUsageAtWork, InternetUsageAtCoffeeShops))
-    df4 <- tidyr::gather(df4, Usage, number, 1:3)
+    df4 <- df4%>%gather( Usage, number, 1:3) 
+    df4 <- df4%>%filter(sqrt(number) < AvgPoint())
     
     p2 <- ggplot(df4, aes(x = Usage, y = sqrt(number), color = Usage)) + geom_boxplot()
     ggplotly(p2)
     
   })
+  
   output$boxPlot3 <- renderPlot({
     df2 <- dfbc0()
     df5 <- data.frame(df2$TenToThirtyK, df2$ThirtyToFiftyK, df2$FiftyToHundredK, df2$HundredToHundredFiftyK, df2$HundredFiftyPlus)
@@ -280,7 +290,7 @@ shinyServer(function(input, output) {
     plot1 <- ggplot(df_all,aes(x = Connection, y = Connection_Percentage, fill = Connection)) + geom_bar(stat = "identity", color = "black") + coord_flip() + labs(y = "Connectivity", x = "State", color = "Percentage") + theme(axis.text = element_text(size = 3)) + facet_wrap(~State) + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .25)) + scale_fill_brewer(palette="RdPu")
     plot1
   })
-  })
+})
 
 
 

@@ -39,7 +39,8 @@ dashboardPage(
                          hr()
                 ),
                 tabPanel("Age Group Distribution", plotlyOutput("boxPlot1", height=700)),
-                tabPanel("Internet Usage", plotlyOutput("boxPlot2",height=700)),
+                tabPanel("Internet Usage",sliderInput("UsageRange", "Slide to Cutoff",min = 0, max = 5000,  value = 100),
+                         actionButton(inputId = "click0_v1", label = "Set range"),  label = "Display boxplot", plotlyOutput("boxPlot2",height=700)),
                 tabPanel("Income Distribution", plotOutput("boxPlot3",height=700))
               )
       ),
@@ -108,6 +109,8 @@ dashboardPage(
     )
   ), skin = "purple"
 )
+
+
 
 
 
