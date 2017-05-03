@@ -4,6 +4,8 @@ author: "Robert Jurgens, Logan Watkins, Thu Le"
 output:
   html_document:
     css: styles.css
+  html_notebook:
+    css: styles.css
 ---
 ```{r}
 
