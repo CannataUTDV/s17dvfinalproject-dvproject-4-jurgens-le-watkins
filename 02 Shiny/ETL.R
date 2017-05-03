@@ -1,54 +1,8 @@
----
-title: "Internet Connectivity and Usage Across the United States"
-author: "Robert Jurgens, Logan Watkins, Thu Le"
-output:
-  html_document:
-    css: styles.css
----
-```{r}
+require(data.world)
+require(dplyr)
 
-#  _____         _                  _        _                                   _______  _            
-# |  __ \       | |                | |      | |                                 |__   __|| |           
-# | |__) | ___  | |__    ___  _ __ | |_     | |      ___    __ _   __ _  _ __      | |   | |__   _   _ 
-# |  _  / / _ \ | '_ \  / _ \| '__|| __|    | |     / _ \  / _` | / _` || '_ \     | |   | '_ \ | | | |
-# | | \ \| (_) || |_) ||  __/| |   | |_  _  | |____| (_) || (_| || (_| || | | | _  | |   | | | || |_| |
-# |_|  \_\\___/ |_.__/  \___||_|    \__|( ) |______|\___/  \__, | \__,_||_| |_|( ) |_|   |_| |_| \__,_|
-#                                       |/                  __/ |              |/                         
-#                                                          |___/               
-```
+conn <- data.world(token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwcm9kLXVzZXItY2xpZW50OnNpbmlzdGVycm9iZXJ0IiwiaXNzIjoiYWdlbnQ6c2luaXN0ZXJyb2JlcnQ6OjdhZDI2MzMxLWQxOWItNGE3YS1iYTJkLTUzM2EzMzRjY2MzMCIsImlhdCI6MTQ4NDY5NzI2Miwicm9sZSI6WyJ1c2VyX2FwaV93cml0ZSIsInVzZXJfYXBpX3JlYWQiXSwiZ2VuZXJhbC1wdXJwb3NlIjp0cnVlfQ.Lj0KjHrPb7-eIXIP_SWcKPoT5dv1aNotZqn4x54JbvqoBJgyLlvVq5-4Fgc-af0tItOIQUffLbK_jvDF0sMLYw")
 
-
-```{r setup, include=FALSE}
-source("Required.R")
-source("getToken.R")
-library(knitr)
-opts_chunk$set(out.width='1750px', dpi=200)
-```
-
-# I. Session Info
-```{r}
-sessionInfo()
-```
-
-# II. Data Sources
-
-Note : set the working directory to the 00 Doc Folder.
-
-<b>Original data sources:</b></br>
-http://www.governing.com/gov-data/internet-usage-by-state.html</br>
-https://www.ntia.doc.gov/data/digital-nation-data-explorer#sel=tvBoxUser&disp=map
-
-To download the clean data (what was used in Tableau) download CleanedInternetUsageBySatet.csv from the <b>data.world</b> link.
-https://data.world/lowatt/s-17-dv-project-6 and download ASM_2015_31AS101_with_ann.csv.
-
-This data describes Internet Usage and Connectivity across the United States from July 2015 to October 2016. The columns that we used were a combination of the census population data,income data, internet usage and connectivity data.
-
-# III. ETL Process
-
-## 1. Bringing in the data
-First, we brought the US Census data into our R environment.
-
-```{r, warning=FALSE}
 df1 <- data.world::query(connection = conn,
                          type = "sql",
                          dataset = "thule179/s-17-dv-final-project",
@@ -124,11 +78,6 @@ df1 <- data.world::query(connection = conn,
                          `uscensusbureau`.`acs-2015-5-e-income`.`USA_All_States` as B
                          where A.AreaName = B.AreaName"
                          )
-```
-
-We then took the data table related to Facebook traffic penetration.
-
-```{r, warning=FALSE}
 
 df1Second <- data.world::query(connection = conn,
                                type = "sql",
@@ -141,11 +90,7 @@ df1Second <- data.world::query(connection = conn,
                                C.`Facebook users August, 2010`,
                                C.`Facebook Penetration`
                                from Facebook as C")
-```
 
-Lastly, we brought in data points for internet usage and connectivity.
-
-```{r, warning=FALSE}
 df_InternetConnectivity <- data.world::query(connection = conn, type = "sql",
                                              dataset = "thule179/s-17-dv-final-project",
                                              "SELECT c.State as State, `Internet Connectivity`.`No connection anywhere (%)` as NoConnectionAnywhere, `Internet Connectivity`.`No home connection, but connect elsewhere (%)`
@@ -156,15 +101,8 @@ as NoHomeConnection_ConnectElseWhere, `Internet Connectivity`.`Connect at home o
                                           FROM `Internet Connectivity.xlsx/Internet Connectivity`as c, `Internet Connectivity.xlsx/InternetUsageAtHome` as h,
                                           InternetUsageAtCoffeeShops as s, InternetUsageAtWork as w, InternetUsage as i
                                           where c.State = h.State and s.State = h.State and h.State = w.State and w.State = i.State")
-```
 
-## 2. Mapping the data
-
-To reduce the number of columns in our main table and to make the data easier for analysis, we categorized the US population into age and income groups, separated by gender.
-
-### a. Grouping By Age
-Put males into age categories.
-```{r,warning=FALSE}
+# Put males into age categories
 male0to9 <- df1$B01001_003 + df1$B01001_004
 male10to19 <- df1$B01001_005 + df1$B01001_006 + df1$B01001_007
 male20to29 <- df1$B01001_008 + df1$B01001_009 + df1$B01001_010 + df1$B01001_011
@@ -174,10 +112,8 @@ male50to59 <- df1$B01001_016 + df1$B01001_017
 male60to69 <- df1$B01001_018 + df1$B01001_019 + df1$B01001_020 + df1$B01001_021
 male70to79 <- df1$B01001_022 + df1$B01001_023
 male80andUp <- df1$B01001_024 + df1$B01001_025
-```
 
-Put females into age categories.
-```{r,warning=FALSE}
+# Put females into age categories
 female0to9 <- df1$B01001_027 + df1$B01001_028
 female10to19 <- df1$B01001_029 + df1$B01001_030 + df1$B01001_031
 female20to29 <- df1$B01001_032 + df1$B01001_033 + df1$B01001_034 + df1$B01001_035
@@ -187,46 +123,29 @@ female50to59 <- df1$B01001_040 + df1$B01001_041
 female60to69 <- df1$B01001_042 + df1$B01001_043 + df1$B01001_044 + df1$B01001_045
 female70to79 <- df1$B01001_046 + df1$B01001_047
 female80andUp <- df1$B01001_048 + df1$B01001_049
-```
 
-### b. Grouping By Income
-Group income into categories.
-```{r,warning=FALSE}
+# Group income into categories
 Agg_Income <- df1$B19062_001
 TenToThirtyK <- df1$B19001_002 + df1$B19001_003 + df1$B19001_004 + df1$B19001_005 + df1$B19001_006
 ThirtyToFiftyK <- df1$B19001_007 + df1$B19001_008 + df1$B19001_009 + df1$B19001_010
 FiftyToHundredK <- df1$B19001_011 + df1$B19001_012 + df1$B19001_013
 HundredToHundredFiftyK <- df1$B19001_014 + df1$B19001_015
 HundredFiftyPlus <- df1$B19001_016 + df1$B19001_017
-```
 
-### c. Binding the data
-Bind all the categories into a data frame.
-```{r,warning=FALSE}
+# Bind all the categories into a data frame
 df2 <- as.data.frame(cbind(State = df1$AreaName, TotalPopulation = df1$B01001_001, male0to9, male10to19, male20to29, male30to39, male40to49, male50to59, male60to69, male70to79, male80andUp, female0to9, female10to19, female20to29, female30to39, female40to49, female50to59, female60to69, female70to79, female80andUp, Agg_Income,TenToThirtyK, ThirtyToFiftyK, FiftyToHundredK, HundredToHundredFiftyK, HundredFiftyPlus), stringsAsFactors = FALSE)
-```
 
-Change the numeric columns to numeric.
-```{r,warning=FALSE}
+# Change the numeric columns to numeric.
 df2[-1] <- as.data.frame(apply(df2[-1], 2, as.numeric))
 df2 <- cbind(df2, df1Second)
-```
 
-Do an inner join by State of df2 and InternetConnectivity.
-```{r,warning=FALSE}
+# Do an inner join by State of df2 and InternetConnectivity
 df2 <- merge(df2,df_InternetConnectivity, by ="State")
-```
 
-## 3. Cleaning the Data
-Now we have our main data table, we'd need to clean up our data to prepare for analysis.
-
-Get average income for each state.
-```{r,warning=FALSE}
+# get average income for each state
 df2$PerCapitaIncome <-  df2$Agg_Income / df2$TotalPopulation
-```
 
-Remove '\n' line breaks and commas in rows to convert InternetUsage into numbers.
-```{r,warning=FALSE}
+# remove \n line breaks and commas in rows to convert InternetUsage into numbers
 df2[,'InternetUsage'] <- gsub(",","",df2[,'InternetUsage'])
 df2[,'InternetUsage'] <- gsub("\n","",df2[,'InternetUsage'])
 df2[,'InternetUsageAtCoffeeShops'] <- gsub(",","",df2[,'InternetUsageAtCoffeeShops'])
@@ -239,34 +158,24 @@ df2$InternetUsage <- as.numeric(df2$InternetUsage)
 df2$InternetUsageAtCoffeeShops <-  as.numeric(df2$InternetUsageAtCoffeeShops)
 df2$InternetUsageAtWork <-  as.numeric(df2$InternetUsageAtWork)
 df2$InternetUsageAtHome <-  as.numeric(df2$InternetUsageAtHome)
-```
 
-Get average internet usage per person for each State.
-```{r,warning=FALSE}
+# get average internet usage per person for each State
 df2$Avg_InternetUsage <- df2$InternetUsage
 df2$Avg_InternetUsage <- df2$InternetUsage / df2$TotalPopulation
-```
 
-Get average internet usage at work.
-```{r,warning=FALSE}
+# get average internet usage at work
 df2$Avg_InternetUsageAtWork <- df2$InternetUsageAtWork
 df2$Avg_InternetUsageAtWork <- df2$InternetUsageAtWork / df2$TotalPopulation
-```
 
-Get average internet usage at home.
-```{r,warning=FALSE}
+# get average internet usage at home
 df2$Avg_InternetUsageAtHome <- df2$InternetUsageAtHome
 df2$Avg_InternetUsageAtHome <- df2$InternetUsageAtHome / df2$TotalPopulation
-```
 
-Get average internet usage at coffee shops.
-```{r,warning=FALSE}
+# get average internet usage at coffee shops
 df2$Avg_InternetUsageAtCoffeeShops <- df2$InternetUsageAtCoffeeShops
 df2$Avg_InternetUsageAtCoffeeShops <- df2$InternetUsageAtCoffeeShops / df2$TotalPopulation
-```
 
-Find high, medium, and low ranges of Internet Usage.
-```{r,warning=FALSE}
+# Find high, medium, and low ranges of Internet Usage
 sorted_df2 <- df2[order(df2$Avg_InternetUsage),] # sort df2 from lowest to highest based on avg_internet usage
 low_range <- c(sorted_df2$Avg_InternetUsage[c(0: (51/3))]) # subset states with low Internet Usage
 medium_range <- c(sorted_df2$Avg_InternetUsage[c((51/3): (2*51/3))]) # subset states with medium Internet Usage
@@ -295,10 +204,8 @@ df2$InternetUsageLevel <- df2$InternetUsage
 df2$InternetUsageAtHomeLevel <- df2$InternetUsageAtHome
 df2$InternetUsageAtWorkLevel <- df2$InternetUsageAtWork
 df2$InternetUsageAtCoffeeShopsLevel<- df2$InternetUsageAtCoffeeShops
-```
 
-Create a function to categorize internet usage level.
-```{r,warning=FALSE}
+# Create a function to categorize internet usage level
 UsageLevel <- function(col, low_range, medium_range, high_range ){
   for (i in 1:nrow(df2)){
     if(col[i] %in% low_range){
@@ -315,109 +222,23 @@ UsageLevel <- function(col, low_range, medium_range, high_range ){
   result <- col
   return(result)
 }
-```
 
-Get internet usage level by category.
-```{r,warning=FALSE}
+# Get internet usage level by category
 df2$InternetUsageLevel <- UsageLevel(df2$Avg_InternetUsage,low_range,medium_range,high_range)
 df2$InternetUsageAtHomeLevel <- UsageLevel(df2$Avg_InternetUsageAtHome, low_range_home, medium_range_home, high_range_home)
 df2$InternetUsageAtWorkLevel <- UsageLevel(df2$Avg_InternetUsageAtWork, low_range_work, medium_range_work, high_range_work)
 df2$InternetUsageAtCoffeeShopsLevel <- UsageLevel(df2$Avg_InternetUsageAtCoffeeShops, low_range_coffee, medium_range_coffee, high_range_coffee)
-```
 
-Add percent of total population for each age range.
-```{r,warning=FALSE}
+
+# Add percent of total population for each age range
 df2$YoungProportion <- (df2$male0to9 + df2$male10to19 + df2$male20to29 + df2$female0to9 + df2$female10to19 + df2$female20to29) / df2$TotalPopulation
 df2$MiddleProportion <- (df2$male30to39 + df2$male40to49 + df2$male50to59 + df2$female30to39 + df2$female40to49 + df2$female50to59) / df2$TotalPopulation
 df2$OldProportion <- 1 - df2$YoungProportion - df2$MiddleProportion
-```
 
-Create discrete categories for Young Proportion.
-```{r,warning=FALSE}
+# Create discrete categories for Young
 third = quantile(df2$YoungProportion, 1/3)
 two_third = quantile(df2$YoungProportion, 2/3)
 df2$YoungCategories <- if_else(df2$YoungProportion < third, "Low", if_else(df2$YoungProportion < two_third, "Medium", "High"))
-```
 
-Export to csv.
-```{r,warning=FALSE}
-write.csv(df2,file="./CleanedInternetUsageByState.csv")
-```
-
-Now we have a nicely formatted csv file ready for analysis!
-
-# IV. Data Analysis
-## Key Findings:
-
-### Low internet usage in Southern area of United States
-+ The first interesting analysis we discovered was a trend of **low internet usage at both home and work** in the southern and southwestern regions of the United States. Similarly, there is **high internet usage levels at home and work** in the northeastern area of the United States as well as the area from Minnesota to Illinois. In general, it seems like the **further north you are in the United States, the higher internet usage levels there are.** This may be due to the fact that people in the South are more likely to live and work in rural lifestyles than the northern states. Note that darker colors represent higher internet usage rates.
-```{r, message=FALSE, echo = FALSE, fig.width=10, fig.height = 10, fig.align='center'}
-df3 <- data.frame(state = df2$State, interaction(df2$InternetUsageAtHomeLevel, df2$InternetUsageAtWorkLevel))
-names(df3) <- c("region", "value")
-df3$value <- factor(df3$value, levels = c("Low.Low", "Low.Medium", "Low.High", "Medium.Low", "Medium.Medium", "Medium.High", "High.Low", "High.Medium", "High.High"))
-df3$region <- tolower(df3$region)
-levels(df3$value) <- c("Low Home Usage/Low Work Usage", "Low Home Usage/Medium Work Usage", "Low Home Usage/High Work Usage", "Medium Home Usage/Low Work Usage", "Medium Home Usage/Medium Work Usage", "Medium Home Usage/High Work Usage", "High Home Usage/Low Work Usage", "High Home Usage/Medium Work Usage", "High Home Usage/High Work Usage")
-data("continental_us_states")
-c1 <- state_choropleth(df3,
-                      zoom = continental_us_states)
-c1 + scale_fill_brewer(type = "seq", palette = 12) + labs(fill = "Internet Usage (Home/Work)")
-
-```
-
-*****
-### Internet Usage vs Young People Population
-+ After viewing this choroplethr map and seeing areas with high and low internet usage, we decided to make a bar chart to view overall internet trends, including the states with the high overall internet usage. As seen in the previous map, **Vermont, New Hampshire, Minnesota, and Wisconsin have the highest overall internet usage, while Mississippi, Alabama, Tennessee, and Hawaii have the lowest overall internet usage.**
-
-```{r, message=FALSE, echo = FALSE, fig.width=10, fig.height = 10, fig.align='center'}
-df3 <- df2%>%select(State,Avg_InternetUsage)
-df3$InternetUsage_z <-  round((df3$Avg_InternetUsage - mean(df3$Avg_InternetUsage))/sd(df3$Avg_InternetUsage), 2)  # compute normalized Internet Usage
-df3$InternetUsage_type <- ifelse(df3$InternetUsage_z < 0, "below", "above")  # above / below avg flag
-df3 <- df3[order(df3$InternetUsage_z), ]  # sort
-df3$State <- factor(df3$State, levels = unique(df3$State)[order(df3$InternetUsage_z)]) 
-                  
-InternetUsage_bar <- ggplot(df3, aes(x=State, y=InternetUsage_z, label=InternetUsage_z)) + geom_bar(stat='identity', aes(fill=InternetUsage_type), width=.5)  +scale_fill_manual(name="Internet Usage", labels = c("Above Average", "Below Average"), values = c("above"="#00ba38", "below"="#f8766d")) + coord_flip()
-InternetUsage_bar
-```
-In order to further analyse these results, we can use the census data to view the proportion of young people for the Top 3 and Bottom 3 states by internet usage. Note that **the top two states by internet usage (New Hampshire, Vermont) have much lower proportions of young people than the bottom states (Alabama, Mississippi, Tennessee)**.
-
-```{r, message=FALSE, echo = FALSE, fig.width=10, fig.height = 10, fig.align='center'}
-df4 <- df2%>%select(State,YoungProportion)
-df4$YoungPeople_z <-  round((df4$YoungProportion - mean(df4$YoungProportion))/sd(df4$YoungProportion), 2)  # compute normalized Young Proportion
-df4$YoungPeople_type <- ifelse(df4$YoungPeople_z < 0, "below", "above")  # above / below avg flag
-df4 <- df4[order(df4$YoungPeople_z), ]  # sort
-df4$State <- factor(df4$State, levels = df4$State) 
-df5 <- df4[df4$State %in% c("Vermont", "New Hampshire", "Minnesota", "Mississippi", "Alabama", "Tennessee"),]
-
-YoungPeople_bar <- ggplot(df5, aes(x=State, y=YoungPeople_z, label=YoungPeople_z)) + geom_bar(stat='identity', aes(fill=YoungPeople_type), width=.5)  +scale_fill_manual(name="Young Proportion", labels = c("Above Average", "Below Average"), values = c("above"="#00ba38", "below"="#f8766d")) + coord_flip()
-YoungPeople_bar
-
-```
-
-***
-### 3-D Scatterplot - Young People vs Income vs Internet Usage
-+ Finally, in order to get a look at the data from all angles, we created a 3D Scatterplot in plotly with the proportion of Young People vs Median Income vs Internet Usage. Notice there is an extreme outlier (drag and drop the graph to see it better). This chart shows **how District of Colombia is drastically different from the 50 states in terms of young adult percentage.** It also shows that 
-**median income is positively correlated with internet usage.**
-
-```{r, message=FALSE, echo = FALSE, fig.width=4, fig.height = 4, fig.align='center'}
-
-df2$adult20to29 <- df2$male20to29 + df2$female20to29
-df2$youngAdultPercentage <- df2$adult20to29 / df2$TotalPopulation
-normalize <- function(x){
-  return((x - mean(x)) / sd(x))
-}
-df2$normalizedIncome <- normalize(df2$PerCapitaIncome)
-p <- plot_ly(x = ~list(df2$Avg_InternetUsage), 
-             y = ~list(df2$normalizedIncome), 
-             z = ~list(df2$youngAdultPercentage),
-             marker = list(color = ~mpg, colorscale = c('#FFE1A1', '#683531'), showscale = FALSE), 
-             hoverinfo = 'text', 
-             text = ~paste('Internet Usage (Avg) : ', df2$Avg_InternetUsage, 
-                           '</br>Per Capita Income : ', df2$PerCapitaIncome,
-                           '</br> Young Adult Percentage : ', df2$youngAdultPercentage,
-                           '</br> State : ', df2$State), color = df2$State) %>% 
-             add_markers() %>% 
-             layout(scene = list(xaxis = list(title = 'Average Internet Usage'),
-                                      yaxis = list(title = 'Median Income'),
-                                      zaxis = list(title = 'Young Adult Percentage')))
-p
-```
+# export to csv
+#write.csv(df2,file="./CleanedInternetUsageByState.csv")
