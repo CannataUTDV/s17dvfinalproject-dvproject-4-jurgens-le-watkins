@@ -39,7 +39,8 @@ dashboardPage(
                          hr()
                 ),
                 tabPanel("Age Group Distribution", plotlyOutput("boxPlot1", height=700)),
-                tabPanel("Internet Usage", plotlyOutput("boxPlot2",height=700)),
+                tabPanel("Internet Usage",sliderInput("UsageRange", "Slide to Cutoff",min = 0, max = 5000,  value = 100),
+                         actionButton(inputId = "click0_v1", label = "Set range"),  label = "Display boxplot", plotlyOutput("boxPlot2",height=700)),
                 tabPanel("Income Distribution", plotOutput("boxPlot3",height=700))
               )
       ),
@@ -59,8 +60,7 @@ dashboardPage(
                          hr()
                 ),
                 tabPanel("Internet Usage and Young Proportion", checkboxGroupInput("selectedUsageLevels", label = "Usage Levels", 
-                                                                                   choices = list("Low","Medium","High")), checkboxGroupInput("selectedYoungCategories", label = "Young Categories", 
-                                                                                                                                              choices = list("Low","Medium","High")),actionButton(inputId = "click_v1", label = "Pick Usage Level(s) and Young Category"), plotOutput("choroplethPlot1",heigh=700)),
+                                                                                   choices = list("Low","Medium","High")),actionButton(inputId = "click_v1", label = "Pick Usage Level(s) and Young Category"), plotOutput("choroplethPlot1",heigh=700)),
                 tabPanel("Internet Usage at Home and Work", plotOutput("choroplethPlot2", height=700))
               )
       ),
@@ -108,6 +108,8 @@ dashboardPage(
     )
   ), skin = "purple"
 )
+
+
 
 
 
