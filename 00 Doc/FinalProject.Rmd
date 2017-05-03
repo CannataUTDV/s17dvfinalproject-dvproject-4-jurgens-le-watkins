@@ -32,8 +32,7 @@ Note : set the working directory to the 00 Doc Folder.
 http://www.governing.com/gov-data/internet-usage-by-state.html</br>
 https://www.ntia.doc.gov/data/digital-nation-data-explorer#sel=tvBoxUser&disp=map
 
-To download the clean data (what was used in Tableau) download CleanedInternetUsageBySatet.csv from the <b>data.world</b> link.
-https://data.world/thule179/s-17-dv-final-project and download CleanedInternetUsageByStateWithHEX.csv.
+To download the clean data, go to this <b>data.world</b> link https://data.world/thule179/s-17-dv-final-project and download CleanedInternetUsageByStateWithHEX.csv.
 
 This data describes Internet Usage and Connectivity across the United States from July 2015 to October 2016. The columns that we used were a combination of the census population data,income data, internet usage and connectivity data.
 
@@ -321,7 +320,7 @@ df2$InternetUsageAtCoffeeShopsLevel <- UsageLevel(df2$Avg_InternetUsageAtCoffeeS
 
 Add percent of total population for each age range.
 ```{r,warning=FALSE}
-df2$YoungProportion <- (df2$male0to9 + df2$male10to19 + df2$male20to29 + df2$female0to9 + df2$female10to19 + df2$female20to29) / df2$TotalPopulation
+df2$YoungProportion <- (df2$male10to19 + df2$male20to29 + df2$female10to19 + df2$female20to29) / df2$TotalPopulation
 df2$MiddleProportion <- (df2$male30to39 + df2$male40to49 + df2$male50to59 + df2$female30to39 + df2$female40to49 + df2$female50to59) / df2$TotalPopulation
 df2$OldProportion <- 1 - df2$YoungProportion - df2$MiddleProportion
 ```
@@ -389,7 +388,7 @@ df4$YoungPeople_z <-  round((df4$YoungProportion - mean(df4$YoungProportion))/sd
 df4$YoungPeople_type <- ifelse(df4$YoungPeople_z < 0, "below", "above")  # above / below avg flag
 df4 <- df4[order(df4$YoungPeople_z), ]  # sort
 df4$State <- factor(df4$State, levels = df4$State) 
-df5 <- df4[df4$State %in% c("Vermont", "New Hampshire", "Minnesota", "Mississippi", "Alabama", "Tennessee"),]
+df5 <- df4[df4$State %in% c("Vermont", "New Hampshire",  "Mississippi", "Alabama"),]
 
 YoungPeople_bar <- ggplot(df5, aes(x=State, y=YoungPeople_z, label=YoungPeople_z)) + geom_bar(stat='identity', aes(fill=YoungPeople_type), width=.5)  +scale_fill_manual(name="Young Proportion", labels = c("Above Average", "Below Average"), values = c("above"="#00ba38", "below"="#f8766d")) + coord_flip()
 YoungPeople_bar
@@ -401,7 +400,7 @@ YoungPeople_bar
 + Finally, in order to get a look at the data from all angles, we created a 3D Scatterplot in plotly with the proportion of Young People vs Median Income vs Internet Usage. Notice there is an extreme outlier (drag and drop the graph to see it better). This chart shows **how District of Colombia is drastically different from the 50 states in terms of young adult percentage.** It also shows that 
 **median income is positively correlated with internet usage.**
 
-```{r, message=FALSE, echo = FALSE, fig.width=4, fig.height = 4, fig.align='center'}
+```{r, message=FALSE, echo = FALSE, fig.width=4, fig.height = 4, fig.align='center', warning='FALSE'}
 
 df2$adult20to29 <- df2$male20to29 + df2$female20to29
 df2$youngAdultPercentage <- df2$adult20to29 / df2$TotalPopulation

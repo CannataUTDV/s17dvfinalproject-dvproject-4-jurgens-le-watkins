@@ -231,7 +231,7 @@ df2$InternetUsageAtCoffeeShopsLevel <- UsageLevel(df2$Avg_InternetUsageAtCoffeeS
 
 
 # Add percent of total population for each age range
-df2$YoungProportion <- (df2$male0to9 + df2$male10to19 + df2$male20to29 + df2$female0to9 + df2$female10to19 + df2$female20to29) / df2$TotalPopulation
+df2$YoungProportion <- (df2$male10to19 + df2$male20to29 + df2$female10to19 + df2$female20to29) / df2$TotalPopulation
 df2$MiddleProportion <- (df2$male30to39 + df2$male40to49 + df2$male50to59 + df2$female30to39 + df2$female40to49 + df2$female50to59) / df2$TotalPopulation
 df2$OldProportion <- 1 - df2$YoungProportion - df2$MiddleProportion
 
@@ -241,5 +241,5 @@ two_third = quantile(df2$YoungProportion, 2/3)
 df2$YoungCategories <- if_else(df2$YoungProportion < third, "Low", if_else(df2$YoungProportion < two_third, "Medium", "High"))
 
 # export to csv
-#write.csv(df2,file="./CleanedInternetUsageByState.csv")
+# write.csv(df2,file="./CleanedInternetUsageByState.csv")
 

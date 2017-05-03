@@ -225,7 +225,24 @@ shinyServer(function(input, output) {
   output$scatterPlot2 <- renderPlotly({
     df2 <- dfbc2()
     df2$adult20to29 <- df2$male20to29 + df2$female20to29
-    p <- plot_ly(x = ~list(df2$Avg_InternetUsage), y = ~list(df2$Avg_InternetUsageAtCoffeeShops), z = ~list(df2$adult20to29),marker = list(color = ~mpg, colorscale = c('#FFE1A1', '#683531'), showscale = FALSE), hoverinfo = 'text', text = ~paste('Internet Usage (Avg): ', df2$Avg_InternetUsage, '</br>Coffee Shops (Avg): ', df2$Avg_InternetUsageAtCoffeeShops,'</br> Young Adult Population: ', df2$adult20to29), color = df2$State) %>%add_markers() %>%layout(scene = list(xaxis = list(title = 'Avg_InternetUsage'),yaxis = list(title = 'CoffeeShops'),zaxis = list(title = 'Young adult')))
+    df2$youngAdultPercentage <- df2$adult20to29 / df2$TotalPopulation
+    normalize <- function(x){
+      return((x - mean(x)) / sd(x))
+    }
+    df2$normalizedIncome <- normalize(df2$PerCapitaIncome)
+    p <- plot_ly(x = ~list(df2$Avg_InternetUsage), 
+                 y = ~list(df2$normalizedIncome), 
+                 z = ~list(df2$youngAdultPercentage),
+                 marker = list(color = ~mpg, colorscale = c('#FFE1A1', '#683531'), showscale = FALSE), 
+                 hoverinfo = 'text', 
+                 text = ~paste('Internet Usage (Avg) : ', df2$Avg_InternetUsage, 
+                               '</br>Per Capita Income : ', df2$PerCapitaIncome,
+                               '</br> Young Adult Percentage : ', df2$youngAdultPercentage,
+                               '</br> State : ', df2$State), color = df2$State) %>% 
+      add_markers() %>% 
+      layout(scene = list(xaxis = list(title = 'Average Internet Usage'),
+                          yaxis = list(title = 'Median Income'),
+                          zaxis = list(title = 'Young Adult Percentage')))
     p
     
   })
@@ -280,6 +297,19 @@ shinyServer(function(input, output) {
     InternetUsage_bar <- ggplot(df, aes(x=State, y=InternetUsage_z, label=InternetUsage_z)) + geom_bar(stat='identity', aes(fill=InternetUsage_type), width=.5)  +scale_fill_manual(name="Internet Usage", labels = c("Above Average", "Below Average"), values = c("above"="#00ba38", "below"="#f8766d")) + coord_flip()
     
     InternetUsage_bar
+  })
+  
+  output$barchartPlot1_v2 <- renderPlot({
+    df2 <- dfbc1()
+    df4 <- df2%>%select(State,YoungProportion)
+    df4$YoungPeople_z <-  round((df4$YoungProportion - mean(df4$YoungProportion))/sd(df4$YoungProportion), 2)  # compute normalized Young Proportion
+    df4$YoungPeople_type <- ifelse(df4$YoungPeople_z < 0, "below", "above")  # above / below avg flag
+    df4 <- df4[order(df4$YoungPeople_z), ]  # sort
+    df4$State <- factor(df4$State, levels = df4$State) 
+    df5 <- df4[df4$State %in% c("Vermont", "New Hampshire",  "Mississippi", "Alabama"),]
+    
+    YoungPeople_bar <- ggplot(df5, aes(x=State, y=YoungPeople_z, label=YoungPeople_z)) + geom_bar(stat='identity', aes(fill=YoungPeople_type), width=.5)  +scale_fill_manual(name="Young Proportion", labels = c("Above Average", "Below Average"), values = c("above"="#00ba38", "below"="#f8766d")) + coord_flip()
+    YoungPeople_bar
   })
   
   output$barchartPlot2 <- renderPlotly({

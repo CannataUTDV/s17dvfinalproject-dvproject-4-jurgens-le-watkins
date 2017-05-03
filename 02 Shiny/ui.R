@@ -80,7 +80,7 @@ dashboardPage(
                          hr()
                 ),
                 tabPanel("Per Capita Income and Average Internet Usage", plotlyOutput("scatterPlot1", height=700)),
-                tabPanel("Young Adult and Internet Usage at CoffeeShops", plotlyOutput("scatterPlot2", height=1000, width=1000)),
+                tabPanel("Young Adult, Median Income and Internet Usage", plotlyOutput("scatterPlot2", height=1000, width=1000)),
                 tabPanel("Young Population and Internet Usage", plotlyOutput("scatterPlot3", height=1000, width=1000))
               )
       ),
@@ -100,7 +100,14 @@ dashboardPage(
              DT::dataTableOutput("barchartData1"),
              hr()
           ),
-          tabPanel("Internet Usage", plotOutput("barchartPlot1", height=700)),
+          tabPanel("Internet Usage",
+                   'Vermont, New Hampshire, Minnesota, and Wisconsin have the highest overall internet usage, while Mississippi, Alabama, Tennessee, and Hawaii have the lowest overall internet usage.',
+                   hr(),
+                   plotOutput("barchartPlot1", height=700),
+                   hr(),
+                   'The top two states by internet usage (New Hampshire, Vermont) have much lower proportions of young people than the bottom states (Alabama, Mississippi, Tennessee)',
+                   hr(),
+                   plotOutput("barchartPlot1_v2", height=700)),
           tabPanel("Internet Connectivity", plotlyOutput("barchartPlot2", height=1000, width=1000))
         )
       )
